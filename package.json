@@ -1,0 +1,31 @@
+{
+  "name": "hititipi",
+  "version": "0.0.1",
+  "description": "An HTTP static file server dedicated for testing with live configurable response headers",
+  "license": "MIT",
+  "type": "module",
+  "main": "src/hititipi.js",
+  "bin": {
+    "hititipi": "src/hititipi.js",
+    "hititipi-compress": "src/hititipi.js"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "start": "node src/hititipi.js",
+    "start-h1:dev": "nodemon src/hititipi.js",
+    "test": "mocha test/**/*.spec.js",
+    "test:w": "nodemon -x 'npm run test'"
+  },
+  "dependencies": {
+    "compressible": "^2.0.18",
+    "etag": "^1.8.1",
+    "mime-types": "^2.1.27"
+  },
+  "devDependencies": {
+    "glob": "^7.1.6",
+    "mocha": "^8.1.0",
+    "nodemon": "^2.0.4"
+  }
+}
