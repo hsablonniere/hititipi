@@ -4,17 +4,17 @@
   "description": "An HTTP static file server dedicated for testing with live configurable response headers",
   "license": "MIT",
   "type": "module",
-  "main": "src/hititipi.js",
+  "main": "bin/hititipi.js",
   "bin": {
-    "hititipi": "src/hititipi.js",
-    "hititipi-compress": "src/hititipi.js"
+    "hititipi": "bin/hititipi.js",
+    "hititipi-compress": "bin/hititipi-compress.js"
   },
   "files": [
     "src"
   ],
   "scripts": {
-    "start": "node src/hititipi.js",
-    "start-h1:dev": "nodemon src/hititipi.js",
+    "start": "bin/hititipi.js",
+    "start:dev": "nodemon bin/hititipi.js",
     "test": "mocha test/**/*.spec.js",
     "test:w": "nodemon -x 'npm run test'"
   },

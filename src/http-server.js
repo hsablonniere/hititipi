@@ -2,20 +2,11 @@ import * as dashboard from './dashboard-template.js';
 import http from 'http';
 import { catchErrors, replaceUrl, serve301, serve302, serve404, serve405, serveFile } from './lib/http.js';
 import { extractPathAndOptionsString, parseOptionsString, serializeOptions } from './lib/options.js';
-import { getDirInfo, getFileInfo, loadAllTemplates } from './lib/fs.js';
+import { getFileInfo, loadAllTemplates } from './lib/fs.js';
 import { Readable } from 'stream';
 
-const { PORT = 8080, HITITIPI_OPTIONS } = process.env;
-const [STATIC_ROOT_DIR = '.', TEMPLATE_ROOT_DIR] = process.argv.slice(2);
+export async function startServer ({ PORT, HITITIPI_OPTIONS, staticRoot, templateRoot }) {
 
-async function run () {
-
-  const staticRoot = await getDirInfo(STATIC_ROOT_DIR);
-  if (!staticRoot.exists) {
-    throw new Error(`HTTP 1.1 server cannot be started, configured static root ${staticRoot.path} does not exist!`);
-  }
-
-  const templateRoot = await getDirInfo(TEMPLATE_ROOT_DIR);
   const templateList = templateRoot.exists
     ? await loadAllTemplates(templateRoot.path)
     : [];
@@ -75,19 +66,4 @@ async function run () {
         : serve404(httpResponse);
     }))
     .listen(PORT);
-
-  console.log(`HTTP 1.1 server started on port ${PORT}`);
-  if (HITITIPI_OPTIONS != null) {
-    console.log(`  using fixed options ${HITITIPI_OPTIONS}`);
-  }
-  console.log(`  serving static files from ${staticRoot.path}`);
-  if (TEMPLATE_ROOT_DIR != null && templateRoot.exists) {
-    console.log(`  serving template files from ${templateRoot.path}`);
-  }
 }
-
-run()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  });

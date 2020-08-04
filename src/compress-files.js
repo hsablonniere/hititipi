@@ -1,25 +1,17 @@
 import fs from 'fs';
-import rawGlob from 'glob';
+import isCompressible from 'compressible';
+import mime from 'mime-types';
 import { createBrotliCompress, createGzip } from 'zlib';
 import { pipeline as rawPipeline } from 'stream';
 import { promisify } from 'util';
-import mime from 'mime-types';
-import isCompressible from 'compressible';
 
 const pipeline = promisify(rawPipeline);
-const glob = promisify(rawGlob);
 
-const [INPUT_GLOB] = process.argv.slice(2);
+export async function compressFiles (inputGlob) {
 
-async function run () {
+  console.log(`Starting compression on ${inputGlob}`);
 
-  if (INPUT_GLOB == null) {
-    throw new Error('hititipi-compress needs the glob of files to compress as the first arg');
-  }
-
-  console.log(`Starting compression on ${INPUT_GLOB}`);
-
-  const files = await glob(INPUT_GLOB);
+  const files = await glob(inputGlob);
   const filesToCompress = files.filter((filepath) => {
     const mimeType = mime.lookup(filepath);
     return isCompressible(mimeType);
@@ -42,9 +34,3 @@ async function run () {
       .then(() => console.log(`brotlifying ${f} DONE!`));
   }
 }
-
-run()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  });
