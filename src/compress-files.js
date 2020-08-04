@@ -13,7 +13,7 @@ export async function compressFiles (inputGlob) {
 
   console.log(`Starting compression on ${inputGlob}`);
 
-  const files = await glob(inputGlob);
+  const files = await glob(inputGlob, { nodir: true });
   const filesToCompress = files.filter((filepath) => {
     const mimeType = mime.lookup(filepath);
     return isCompressible(mimeType);
@@ -28,11 +28,13 @@ export async function compressFiles (inputGlob) {
     const gzipStream = createGzip();
     const gzipOutputStream = fs.createWriteStream(f + '.gz');
     pipeline(inputStream, gzipStream, gzipOutputStream)
-      .then(() => console.log(`gzipping ${f} DONE!`));
+      .then(() => console.log(`gzipping ${f} DONE!`))
+      .catch((e) => console.error(e));
 
     const brotliStream = createBrotliCompress();
     const brotliOutputStream = fs.createWriteStream(f + '.br');
     pipeline(inputStream, brotliStream, brotliOutputStream)
-      .then(() => console.log(`brotlifying ${f} DONE!`));
+      .then(() => console.log(`brotlifying ${f} DONE!`))
+      .catch((e) => console.error(e));
   }
 }
