@@ -1,11 +1,13 @@
 import fs from 'fs';
 import isCompressible from 'compressible';
 import mime from 'mime-types';
+import rawGlob from 'glob';
 import { createBrotliCompress, createGzip } from 'zlib';
 import { pipeline as rawPipeline } from 'stream';
 import { promisify } from 'util';
 
 const pipeline = promisify(rawPipeline);
+const glob = promisify(rawGlob);
 
 export async function compressFiles (inputGlob) {
 

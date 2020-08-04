@@ -1,12 +1,10 @@
 #!/usr/bin/env node
 
-import rawGlob from 'glob';
 import { compressFiles } from '../src/compress-files.js';
 import { pipeline as rawPipeline } from 'stream';
 import { promisify } from 'util';
 
 const pipeline = promisify(rawPipeline);
-const glob = promisify(rawGlob);
 
 const [INPUT_GLOB] = process.argv.slice(2);
 
