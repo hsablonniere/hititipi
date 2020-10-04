@@ -12,6 +12,9 @@
     "src"
   ],
   "scripts": {
+    "dev:dynamic-options": "nodemon examples/hititipi-dynamic-options.js",
+    "dev:api": "nodemon examples/hititipi-api.js",
+    "dev:static": "nodemon examples/hititipi-static.js",
     "test": "mocha test/*.spec.js test/**/*.spec.js",
     "test:w": "nodemon -x 'npm run test'"
   },

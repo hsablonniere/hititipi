@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+<div class="markdown-body">
+  <h1>API!</h1>
+  <button id="get-btn">GET</button>
+  <button id="put-btn">PUT</button>
+</div>
+
+<script>
+const getBtn = document.querySelector('#get-btn');
+getBtn.addEventListener('click', () => {
+  fetch('http://other.localhost:8080/api/foobar').then((r) => r.json()).then(console.log).catch(console.error);
+});
+
+const putBtn = document.querySelector('#put-btn');
+putBtn.addEventListener('click', () => {
+  fetch('http://other.localhost:8080/api/foobar', {
+    method: 'put',
+    body: 'foo',
+    headers: {
+      'x-foo': 'foo',
+    },
+  }).then((r) => {
+    console.log(JSON.stringify(Array.from(r.headers.entries())));
+    return r.json();
+  }).then(console.log).catch(console.error);
+});
+</script>
+
+</body>
+</html>
