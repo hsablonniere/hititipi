@@ -7,7 +7,7 @@ export function permissionsPolicy (options = {}) {
 
     const responseHeaders = {
       ...context.responseHeaders,
-      'feature-policy': permissionsPolicyHeader,
+      'feature-policy': featurePolicyHeader,
       'permissions-policy': permissionsPolicyHeader,
     };
     return { ...context, responseHeaders };

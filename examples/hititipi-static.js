@@ -15,7 +15,7 @@ import { serverName } from '../src/middlewares/server-name.js';
 import { socketId } from '../src/middlewares/socket-id.js';
 import { staticFile } from '../src/middlewares/static-file.js';
 import { csp } from '../src/middlewares/csp.js';
-import { permissionsPolicy } from '../src/middlewares/permissionsPolicy.js';
+import { permissionsPolicy } from '../src/middlewares/permissions-policy.js';
 import { xContentTypeOptions } from '../src/middlewares/x-content-type-options.js';
 import { ONE_YEAR } from '../src/middlewares/hsts.js';
 
