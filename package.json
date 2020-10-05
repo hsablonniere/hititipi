@@ -1,6 +1,6 @@
 {
   "name": "hititipi",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "An HTTP static file server dedicated for testing with live configurable response headers",
   "license": "MIT",
   "type": "module",
