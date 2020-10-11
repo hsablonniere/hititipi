@@ -1,8 +1,8 @@
 import fs from 'fs/promises';
-import mime from 'mime-types';
 import path from 'path';
 import { createReadStream } from 'fs';
 import { getWeakEtag } from '../lib/etag.js';
+import { getContentType } from '../lib/content-type.js';
 
 // try to add context.responseStatus 200
 // try to add context.responseHeaders['content-type']
@@ -36,7 +36,7 @@ export function staticFile (options = {}) {
     }
 
     const responseStatus = 200;
-    const responseHeaders = { ...context.responseHeaders, 'content-type': mime.lookup(filepath) };
+    const responseHeaders = { ...context.responseHeaders, 'content-type': getContentType(filepath) };
 
     return { ...context, responseStatus, responseHeaders, ...rawFile, gzipFile, brotliFile };
   };
