@@ -1,6 +1,13 @@
+import { isHtml } from '../lib/content-type.js';
+
 export function xXssProtection (options = {}) {
 
   return async (context) => {
+
+    const contentTypeHeader = context.responseHeaders['content-type'];
+    if (!isHtml(contentTypeHeader)) {
+      return;
+    }
 
     const xXssProtectionHeader = [
       options.enabled ? '1' : '0',
