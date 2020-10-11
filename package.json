@@ -1,7 +1,7 @@
 {
   "name": "hititipi",
   "version": "0.6.1",
-  "description": "An HTTP static file server dedicated for testing with live configurable response headers",
+  "description": "An DIY HTTP framework based on async functions.",
   "license": "MIT",
   "type": "module",
   "main": "src/hititipi.js",
