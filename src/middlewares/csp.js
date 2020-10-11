@@ -1,7 +1,14 @@
+import { isHtml, isScriptable } from '../lib/content-type.js';
+
 // TODO handle options
 export function csp (options = {}) {
 
   return async (context) => {
+
+    const contentTypeHeader = context.responseHeaders['content-type'];
+    if (!isHtml(contentTypeHeader) && !isScriptable(contentTypeHeader)) {
+      return;
+    }
 
     const cspHeader = [
       'default-src \'self\'',
@@ -28,10 +35,10 @@ export function csp (options = {}) {
     ]
       .filter((a) => a != null)
       .join(';');
-
-    if (cspHeader !== '') {
-      const responseHeaders = { ...context.responseHeaders, 'content-security-policy': cspHeader };
-      return { ...context, responseHeaders };
-    }
   };
+
+  if (cspHeader !== '') {
+    const responseHeaders = { ...context.responseHeaders, 'content-security-policy': cspHeader };
+    return { ...context, responseHeaders };
+  }
 }

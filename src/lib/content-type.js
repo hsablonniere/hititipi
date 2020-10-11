@@ -8,3 +8,13 @@ export function getContentType (filepath) {
     ? 'image/x-icon'
     : contentType;
 }
+
+export function isHtml (contentTypeHeader) {
+  const extension = mime.extension(contentTypeHeader);
+  return ['html', 'xhtml', 'xml'].includes(extension);
+}
+
+export function isScriptable (contentTypeHeader) {
+  const extension = mime.extension(contentTypeHeader);
+  return ['pdf', 'svg', 'js'].includes(extension);
+}
