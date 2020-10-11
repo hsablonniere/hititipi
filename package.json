@@ -22,7 +22,8 @@
     "compressible": "^2.0.18",
     "cookie": "^0.4.1",
     "etag": "^1.8.1",
-    "mime-types": "^2.1.27"
+    "mime-types": "^2.1.27",
+    "node-zopfli": "^2.1.4"
   },
   "devDependencies": {
     "glob": "^7.1.6",

@@ -2,7 +2,8 @@ import fs from 'fs';
 import isCompressible from 'compressible';
 import mime from 'mime-types';
 import rawGlob from 'glob';
-import { createBrotliCompress, createGzip } from 'zlib';
+import zopfli from 'node-zopfli';
+import { createBrotliCompress } from 'zlib';
 import { pipeline as rawPipeline } from 'stream';
 import { promisify } from 'util';
 
@@ -25,7 +26,7 @@ export async function compressFiles (inputGlob) {
 
     const inputStream = fs.createReadStream(f);
 
-    const gzipStream = createGzip();
+    const gzipStream = zopfli.createGzip();
     const gzipOutputStream = fs.createWriteStream(f + '.gz');
     pipeline(inputStream, gzipStream, gzipOutputStream)
       .then(() => console.log(`gzipping ${f} DONE!`))
