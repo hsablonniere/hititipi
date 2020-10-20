@@ -11,34 +11,24 @@ export function csp (options = {}) {
     }
 
     const cspHeader = [
-      'default-src \'self\'',
-      'script-src \'self\'',
-      'style-src \'self\'',
-      'img-src \'self\'',
-      'font-src \'self\'',
-      'connect-src \'self\'',
-      'media-src \'self\'',
-      'object-src \'none\'',
-      'prefetch-src \'self\'',
-      'child-src \'self\'',
-      'frame-src \'self\'',
-      'worker-src \'self\'',
-      'frame-ancestors \'none\'',
-      'form-action \'self\'',
+      `default-src 'none'`,
+      `style-src 'self' 'unsafe-inline'`,
+      `img-src 'self'`,
+      `media-src 'self'`,
+      `frame-ancestors 'none'`,
+      `base-uri 'none'`,
       'upgrade-insecure-requests',
       'block-all-mixed-content',
+      // Not sure about those vv
       'disown-opener',
-      'sandbox',
-      'base-uri \'none\'',
-      'manifest-src \'self\'',
       'plugin-types',
     ]
       .filter((a) => a != null)
       .join(';');
-  };
 
-  if (cspHeader !== '') {
-    const responseHeaders = { ...context.responseHeaders, 'content-security-policy': cspHeader };
-    return { ...context, responseHeaders };
-  }
+    if (cspHeader !== '') {
+      const responseHeaders = { ...context.responseHeaders, 'content-security-policy': cspHeader };
+      return { ...context, responseHeaders };
+    }
+  };
 }
