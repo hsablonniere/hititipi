@@ -17,7 +17,7 @@ import { staticFile } from '../src/middlewares/static-file.js';
 import { csp } from '../src/middlewares/csp.js';
 import { permissionsPolicy } from '../src/middlewares/permissions-policy.js';
 import { xContentTypeOptions } from '../src/middlewares/x-content-type-options.js';
-import { ONE_YEAR } from '../src/middlewares/hsts.js';
+import { hsts, ONE_YEAR } from '../src/middlewares/hsts.js';
 
 function ifProduction (middleware) {
   return () => {
@@ -36,15 +36,15 @@ http
           socketId(),
           keepAlive({ max: 5, timeout: 100 }),
           referrerPolicy('same-origin'),
-          permissionsPolicy(),
-          xContentTypeOptions(),
-          csp(),
+          xContentTypeOptions({ nosniff: true }),
           ifProduction(hsts({ maxAge: ONE_YEAR, includeSubDomains: true })),
           chainUntilResponse([
             ifProduction(redirectHttps()),
             redirectNormalizedPath(),
             staticFile({ root: 'public' }),
           ]),
+          permissionsPolicy(),
+          csp(),
           (context) => {
             return context.responseHeaders['content-type'] === 'text/html'
               ? cacheControl({ 'public': true, 'must-revalidate': true, 'max-age': 0 })
