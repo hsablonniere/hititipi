@@ -126,4 +126,30 @@ describe('static middleware', () => {
       }
     });
   });
+
+  describe('byte range requests', () => {
+
+    const staticFilePublic = staticFile({ root: 'public', enableRange: true });
+
+    it('return 206 with responseSite, headers and file body with HEAD/GET', async () => {
+      for (const requestMethod of HEAD_GET) {
+        const initContext = {
+          ...INIT_CONTEXT,
+          requestMethod,
+          requestUrl: new URL('http://localhost:8080/index.html'),
+          requestHeaders: {
+            ...INIT_CONTEXT.requestHeaders,
+            'range': 'bytes=0-14',
+          },
+        };
+        const context = await staticFilePublic(initContext);
+        assert.strictEqual(context.responseStatus, 206);
+        assert.strictEqual(context.responseHeaders['accept-ranges'], 'bytes');
+        assert.strictEqual(context.responseHeaders['content-range'], 'bytes 0-14/124650');
+        assert.strictEqual(context.responseSize, 15);
+        const responseString = await streamToString(context.responseBody);
+        assert.strictEqual(responseString, '<!doctype html>');
+      }
+    });
+  });
 });

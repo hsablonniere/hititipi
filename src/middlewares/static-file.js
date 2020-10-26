@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
+import parseRange from 'range-parser';
 import { createReadStream } from 'fs';
 import { getWeakEtag } from '../lib/etag.js';
 import { getContentType } from '../lib/content-type.js';
@@ -15,6 +16,7 @@ import { getContentType } from '../lib/content-type.js';
 export function staticFile (options = {}) {
 
   const absoluteRootPath = path.resolve(process.cwd(), options.root);
+  const { enableRange } = options;
 
   return async (context) => {
 
@@ -26,8 +28,10 @@ export function staticFile (options = {}) {
       ? context.requestUrl.pathname + 'index.html'
       : context.requestUrl.pathname;
 
+    const rangeHeader = enableRange ? context.requestHeaders['range'] : null;
+
     const filepath = path.join(absoluteRootPath, pathname);
-    const rawFile = await getFile(filepath);
+    const rawFile = await getFile(filepath, '', rangeHeader);
     const gzipFile = await getFile(filepath, '.gz');
     const brotliFile = await getFile(filepath, '.br');
 
@@ -35,8 +39,14 @@ export function staticFile (options = {}) {
       return;
     }
 
-    const responseStatus = 200;
+    const responseStatus = (rangeHeader != null) ? 206 : 200;
     const responseHeaders = { ...context.responseHeaders, 'content-type': getContentType(filepath) };
+    if (enableRange) {
+      responseHeaders['accept-ranges'] = 'bytes';
+      if (rawFile.contentRange != null) {
+        responseHeaders['content-range'] = rawFile.contentRange;
+      }
+    }
 
     return { ...context, responseStatus, responseHeaders, ...rawFile, gzipFile, brotliFile };
   };
@@ -52,15 +62,35 @@ async function getFileStats (filepath) {
   }
 }
 
-async function getFile (filepath, suffix = '') {
+async function getFile (filepath, suffix, rangeHeader) {
   const stats = await getFileStats(filepath + suffix);
   if (stats == null) {
     return null;
   }
+
+  // No support for multipart ranges yet
+  const range = getFirstRange(stats.size, rangeHeader);
+  const responseSize = (range != null)
+    ? range.end - range.start + 1
+    : stats.size;
+  const contentRange = (range != null)
+    ? `bytes ${range.start}-${range.end}/${stats.size}`
+    : null;
+
   return {
-    responseBody: createReadStream(filepath + suffix),
+    responseBody: createReadStream(filepath + suffix, range),
     responseModificationDate: stats.mtime,
-    responseSize: stats.size,
+    responseSize,
     responseEtag: getWeakEtag(stats, suffix),
+    contentRange,
   };
+}
+
+function getFirstRange (size, rangeHeader) {
+  if (rangeHeader != null) {
+    const ranges = parseRange(size, rangeHeader);
+    if (Array.isArray(ranges)) {
+      return ranges[0];
+    }
+  }
 }
