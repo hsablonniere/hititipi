@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { streamToBuffer } from './stream-utils.js';
+import { cloneStream, streamToBuffer } from './stream-utils.js';
 
 export const HEAD_GET = ['HEAD', 'GET'];
 export const ALL_BUT_HEAD_GET = ['PUT', 'POST', 'DELETE', 'OPTIONS', 'PATCH'];
@@ -14,8 +14,8 @@ export function expectNullHeaders (...headerNames) {
 
 async function assertEqualStreams (stream, expectedStream) {
   if (stream !== expectedStream) {
-    const buffer = streamToBuffer(stream);
-    const expectedBuffer = streamToBuffer(expectedStream);
+    const buffer = await streamToBuffer(cloneStream(stream));
+    const expectedBuffer = await streamToBuffer(cloneStream(expectedStream));
     assert.deepStrictEqual(buffer, expectedBuffer);
   }
 }

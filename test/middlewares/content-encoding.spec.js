@@ -1,13 +1,10 @@
 import assert from 'assert';
 import http from 'http';
 import sinon from 'sinon';
-import supertest from 'supertest';
 import { contentEncoding } from '../../src/middlewares/content-encoding.js';
-import { hititipi } from '../../src/hititipi.js';
 import { Readable } from 'stream';
 import { getStrongEtagHash, getWeakEtag } from '../../src/lib/etag.js';
-import { createBrotliCompress, createBrotliDecompress, createGzip } from 'zlib';
-import { streamToBuffer } from '../lib/stream-utils.js';
+import { createBrotliCompress, createBrotliDecompress, createGzip, createUnzip } from 'zlib';
 import { assertEqualContexts, assertEqualContextsOrNull } from '../lib/test-utils.js';
 
 const INIT_CONTEXT = {
@@ -114,12 +111,16 @@ describe('content-encoding middleware', () => {
     });
 
     it('use dynamic gzip on responseBody', async () => {
-      const dynamicResponse = fakeDynamicResponse('dynamic-response');
-      const initContext = { ...INIT_CONTEXT, ...dynamicResponse };
+      // With dynamic compression, the fake responseBody will be read inside the middleware
+      const initContext = { ...INIT_CONTEXT, ...fakeDynamicResponse('dynamic-response') };
       const context = await contentEncodingWithGzip(initContext);
-      await assertEqualContexts(context, {
+      const contextUncompressed = {
+        ...context,
+        responseBody: context.responseBody.pipe(createUnzip()),
+      };
+      await assertEqualContexts(contextUncompressed, {
         ...initContext,
-        ...dynamicResponse,
+        ...fakeDynamicResponse('dynamic-response'),
         // Mock responseEtag so we can test it later
         responseEtag: context.responseEtag,
         responseSize: null,
@@ -191,12 +192,16 @@ describe('content-encoding middleware', () => {
     });
 
     it('use dynamic brotli on responseBody', async () => {
-      const dynamicResponse = fakeDynamicResponse('dynamic-response');
-      const initContext = { ...INIT_CONTEXT, ...dynamicResponse };
+      // With dynamic compression, the fake responseBody will be read inside the middleware
+      const initContext = { ...INIT_CONTEXT, ...fakeDynamicResponse('dynamic-response') };
       const context = await contentEncodingWithBrotli(initContext);
-      await assertEqualContexts(context, {
+      const contextUncompressed = {
+        ...context,
+        responseBody: context.responseBody.pipe(createBrotliDecompress()),
+      };
+      await assertEqualContexts(contextUncompressed, {
         ...initContext,
-        ...dynamicResponse,
+        ...fakeDynamicResponse('dynamic-response'),
         // Mock responseEtag so we can test it later
         responseEtag: context.responseEtag,
         responseSize: null,
@@ -240,12 +245,15 @@ describe('content-encoding middleware', () => {
     });
 
     it('prefer dynamic brotli over static gzip', async () => {
-      const dynamicResponse = fakeDynamicResponse('dynamic-response');
-      const initContext = { ...INIT_CONTEXT, ...dynamicResponse };
+      const initContext = { ...INIT_CONTEXT, ...fakeDynamicResponse('dynamic-response') };
       const context = await contentEncodingWithBoth(initContext);
-      await assertEqualContexts(context, {
+      const contextUncompressed = {
+        ...context,
+        responseBody: context.responseBody.pipe(createBrotliDecompress()),
+      };
+      await assertEqualContexts(contextUncompressed, {
         ...initContext,
-        ...dynamicResponse,
+        ...fakeDynamicResponse('dynamic-response'),
         // Mock responseEtag so we can test it later
         responseEtag: context.responseEtag,
         responseSize: null,
