@@ -21,7 +21,6 @@
   "dependencies": {
     "compressible": "^2.0.18",
     "cookie": "^0.4.1",
-    "etag": "^1.8.1",
     "mime-types": "^2.1.29",
     "node-zopfli": "^2.1.4",
     "range-parser": "^1.2.1"
