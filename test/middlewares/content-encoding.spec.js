@@ -1,13 +1,10 @@
 import assert from 'assert';
 import http from 'http';
 import sinon from 'sinon';
-import supertest from 'supertest';
 import { contentEncoding } from '../../src/middlewares/content-encoding.js';
-import { hititipi } from '../../src/hititipi.js';
 import { Readable } from 'stream';
 import { getStrongEtagHash, getWeakEtag } from '../../src/lib/etag.js';
-import { createBrotliCompress, createBrotliDecompress, createGzip } from 'zlib';
-import { streamToBuffer } from '../lib/stream-utils.js';
+import { BrotliCompress, createBrotliCompress, createGzip, Gzip } from 'zlib';
 import { assertEqualContexts, assertEqualContextsOrNull } from '../lib/test-utils.js';
 
 const INIT_CONTEXT = {
@@ -20,6 +17,7 @@ const INIT_CONTEXT = {
   responseHeaders: {
     'content-type': 'text/plain',
   },
+  responseTransformers: [],
 };
 
 function fakeFile (content, suffix = '') {
@@ -114,12 +112,12 @@ describe('content-encoding middleware', () => {
     });
 
     it('use dynamic gzip on responseBody', async () => {
-      const dynamicResponse = fakeDynamicResponse('dynamic-response');
-      const initContext = { ...INIT_CONTEXT, ...dynamicResponse };
+      // With dynamic compression, the fake responseBody will be read inside the middleware
+      const initContext = { ...INIT_CONTEXT, ...fakeDynamicResponse('dynamic-response') };
       const context = await contentEncodingWithGzip(initContext);
       await assertEqualContexts(context, {
         ...initContext,
-        ...dynamicResponse,
+        ...fakeDynamicResponse('dynamic-response'),
         // Mock responseEtag so we can test it later
         responseEtag: context.responseEtag,
         responseSize: null,
@@ -128,10 +126,14 @@ describe('content-encoding middleware', () => {
           'content-encoding': 'gzip',
           'vary': 'accept-encoding',
         },
+        // Mock responseTransformers so we can test it later
+        responseTransformers: context.responseTransformers,
       });
 
       assert.ok(context.responseEtag.startsWith('W/"'));
       assert.ok(context.responseEtag.endsWith('.gz"'));
+      assert.ok(context.responseTransformers.length === 1);
+      assert.ok(context.responseTransformers[0] instanceof Gzip);
     });
   });
 
@@ -191,12 +193,11 @@ describe('content-encoding middleware', () => {
     });
 
     it('use dynamic brotli on responseBody', async () => {
-      const dynamicResponse = fakeDynamicResponse('dynamic-response');
-      const initContext = { ...INIT_CONTEXT, ...dynamicResponse };
+      const initContext = { ...INIT_CONTEXT, ...fakeDynamicResponse('dynamic-response') };
       const context = await contentEncodingWithBrotli(initContext);
       await assertEqualContexts(context, {
         ...initContext,
-        ...dynamicResponse,
+        ...fakeDynamicResponse('dynamic-response'),
         // Mock responseEtag so we can test it later
         responseEtag: context.responseEtag,
         responseSize: null,
@@ -205,10 +206,14 @@ describe('content-encoding middleware', () => {
           'content-encoding': 'br',
           'vary': 'accept-encoding',
         },
+        // Mock responseTransformers so we can test it later
+        responseTransformers: context.responseTransformers,
       });
 
       assert.ok(context.responseEtag.startsWith('W/"'));
       assert.ok(context.responseEtag.endsWith('.br"'));
+      assert.ok(context.responseTransformers.length === 1);
+      assert.ok(context.responseTransformers[0] instanceof BrotliCompress);
     });
   });
 
@@ -240,12 +245,11 @@ describe('content-encoding middleware', () => {
     });
 
     it('prefer dynamic brotli over static gzip', async () => {
-      const dynamicResponse = fakeDynamicResponse('dynamic-response');
-      const initContext = { ...INIT_CONTEXT, ...dynamicResponse };
+      const initContext = { ...INIT_CONTEXT, ...fakeDynamicResponse('dynamic-response') };
       const context = await contentEncodingWithBoth(initContext);
       await assertEqualContexts(context, {
         ...initContext,
-        ...dynamicResponse,
+        ...fakeDynamicResponse('dynamic-response'),
         // Mock responseEtag so we can test it later
         responseEtag: context.responseEtag,
         responseSize: null,
@@ -254,10 +258,14 @@ describe('content-encoding middleware', () => {
           'content-encoding': 'br',
           'vary': 'accept-encoding',
         },
+        // Mock responseTransformers so we can test it later
+        responseTransformers: context.responseTransformers,
       });
 
       assert.ok(context.responseEtag.startsWith('W/"'));
       assert.ok(context.responseEtag.endsWith('.br"'));
+      assert.ok(context.responseTransformers.length === 1);
+      assert.ok(context.responseTransformers[0] instanceof BrotliCompress);
     });
   });
 });

@@ -1,6 +1,14 @@
+import { PassThrough } from 'stream';
+
 export async function streamToString (stream) {
   const buffer = await streamToBuffer(stream);
   return buffer.toString();
+}
+
+export function cloneStream (inputStream) {
+  const stream = new PassThrough();
+  inputStream.pipe(stream);
+  return stream;
 }
 
 export function streamToBuffer (stream) {

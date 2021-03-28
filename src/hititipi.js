@@ -18,6 +18,7 @@ export function hititipi (applyMiddleware) {
       responseStatus: null,
       responseHeaders: {},
       responseBody: null,
+      responseTransformers: [],
     };
 
     try {
@@ -26,8 +27,15 @@ export function hititipi (applyMiddleware) {
       nodeResponse.writeHead(context.responseStatus, cleanHeaders(context.responseHeaders));
 
       if (context.responseBody instanceof Stream && !EMPTY_BODY_STATUSES.includes(context.responseStatus)) {
-        // TODO: There's probably a better way to handle errors (add a trailer maybe)
-        await pipeline(context.responseBody, nodeResponse).catch(console.error);
+        const pipelineItems = [context.responseBody, ...context.responseTransformers, nodeResponse];
+        await pipeline(...pipelineItems).catch((err) => {
+          if (err.code === 'ERR_STREAM_PREMATURE_CLOSE') {
+            // This happens if the request is aborted early by the client so we can ignore this
+          }
+          else {
+            console.error(err);
+          }
+        });
       }
       else {
         nodeResponse.end();
