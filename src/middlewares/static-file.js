@@ -35,6 +35,8 @@ export function staticFile (options = {}) {
     const gzipFile = await getFile(filepath, '.gz');
     const brotliFile = await getFile(filepath, '.br');
 
+    autoCloseStreams(rawFile, gzipFile, brotliFile);
+
     if (rawFile == null) {
       return;
     }
@@ -84,6 +86,19 @@ async function getFile (filepath, suffix, rangeHeader) {
     responseEtag: getWeakEtag(stats, suffix),
     contentRange,
   };
+}
+
+function autoCloseStreams (...files) {
+
+  const allStreams = files
+    .filter((file) => file != null)
+    .map((file) => file.responseBody);
+
+  allStreams.forEach((stream) => {
+    stream.on('close', () => {
+      allStreams.forEach((s) => s.close());
+    });
+  });
 }
 
 function getFirstRange (size, rangeHeader) {
