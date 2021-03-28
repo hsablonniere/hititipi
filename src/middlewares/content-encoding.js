@@ -25,18 +25,21 @@ export function contentEncoding (options = {}) {
         return { ...context, responseHeaders, ...context.brotliFile };
       }
       else {
-        const responseBody = context.responseBody.pipe(createBrotliCompress({
-          params: {
-            [zlib.constants.BROTLI_PARAM_MODE]: zlib.constants.BROTLI_MODE_TEXT,
-            [zlib.constants.BROTLI_PARAM_QUALITY]: 5,
-            [zlib.constants.BROTLI_PARAM_SIZE_HINT]: context.responseSize,
-          },
-        }));
+        const responseTransformers = [
+          ...context.responseTransformers,
+          createBrotliCompress({
+            params: {
+              [zlib.constants.BROTLI_PARAM_MODE]: zlib.constants.BROTLI_MODE_TEXT,
+              [zlib.constants.BROTLI_PARAM_QUALITY]: 5,
+              [zlib.constants.BROTLI_PARAM_SIZE_HINT]: context.responseSize,
+            },
+          }),
+        ];
         // Don't try to compute reponseSize post compression, can be done with another middleware
         const responseSize = null;
         // Don't try to compute new strong etag
         const responseEtag = transformEtag(context.responseEtag, '.br');
-        return { ...context, responseHeaders, responseBody, responseSize, responseEtag };
+        return { ...context, responseHeaders, responseTransformers, responseSize, responseEtag };
       }
     }
 
@@ -48,12 +51,15 @@ export function contentEncoding (options = {}) {
         return { ...context, responseHeaders, ...context.gzipFile };
       }
       else {
-        const responseBody = context.responseBody.pipe(createGzip({ level: 6 }));
+        const responseTransformers = [
+          ...context.responseTransformers,
+          createGzip({ level: 6 }),
+        ];
         // Don't try to compute reponseSize post compression, can be done with another middleware
         const responseSize = null;
         // Don't try to compute new strong etag
         const responseEtag = transformEtag(context.responseEtag, '.gz');
-        return { ...context, responseHeaders, responseBody, responseSize, responseEtag };
+        return { ...context, responseHeaders, responseTransformers, responseSize, responseEtag };
       }
     }
   };
