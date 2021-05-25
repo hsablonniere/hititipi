@@ -3,7 +3,6 @@
   "version": "0.11.0",
   "description": "An DIY HTTP framework based on async functions.",
   "license": "MIT",
-  "type": "module",
   "main": "src/hititipi.js",
   "bin": {
     "hititipi-compress": "bin/hititipi-compress.js"
@@ -19,6 +18,9 @@
     "test:w": "nodemon -x 'npm run test'"
   },
   "dependencies": {
+    "@babel/cli": "^7.14.3",
+    "@babel/core": "^7.14.3",
+    "@babel/plugin-transform-modules-commonjs": "^7.14.0",
     "compressible": "^2.0.18",
     "cookie": "^0.4.1",
     "mime-types": "^2.1.29",

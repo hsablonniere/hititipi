@@ -1,16 +1,16 @@
-import http from 'http';
-import { cacheControl } from '../src/middlewares/cache-control.js';
-import { chainAll } from '../src/middlewares/chain-all.js';
-import { contentEncoding } from '../src/middlewares/content-encoding.js';
-import { contentLength } from '../src/middlewares/content-length.js';
-import { hititipi } from '../src/hititipi.js';
-import { keepAlive } from '../src/middlewares/keep-alive.js';
-import { logRequest } from '../src/middlewares/log-request.js';
-import { notModified } from '../src/middlewares/not-modified.js';
-import { referrerPolicy } from '../src/middlewares/referrer-policy.js';
-import { serverName } from '../src/middlewares/server-name.js';
-import { socketId } from '../src/middlewares/socket-id.js';
-import { staticFile } from '../src/middlewares/static-file.js';
+const http = require('http');
+const { cacheControl } = require('../cjs/middlewares/cache-control.js');
+const { chainAll } = require('../cjs/middlewares/chain-all.js');
+const { contentEncoding } = require('../cjs/middlewares/content-encoding.js');
+const { contentLength } = require('../cjs/middlewares/content-length.js');
+const { hititipi } = require('../cjs/hititipi.js');
+const { keepAlive } = require('../cjs/middlewares/keep-alive.js');
+const { logRequest } = require('../cjs/middlewares/log-request.js');
+const { notModified } = require('../cjs/middlewares/not-modified.js');
+const { referrerPolicy } = require('../cjs/middlewares/referrer-policy.js');
+const { serverName } = require('../cjs/middlewares/server-name.js');
+const { socketId } = require('../cjs/middlewares/socket-id.js');
+const { staticFile } = require('../cjs/middlewares/static-file.js');
 
 function ifProduction (middleware) {
   return () => {
