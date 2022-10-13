@@ -13,6 +13,7 @@ export function notModified (options = {}) {
     let responseBody = context.responseBody;
     const responseHeaders = { ...context.responseHeaders };
 
+    const requestDoesNotHaveIfNoneMatch = context.requestHeaders['if-none-match'] == null;
     const shouldSetEtag = options.etag && (context.responseEtag != null) && isHeadGet && is200;
     const isEtagNotModified = shouldSetEtag && checkEtagNotModified(context);
     if (shouldSetEtag) {
@@ -25,9 +26,9 @@ export function notModified (options = {}) {
       responseHeaders['last-modified'] = context.responseModificationDate.toGMTString();
     }
 
-    const isNotModified = (isEtagNotModified && isLastModifiedRecentEnough)
-      || (isEtagNotModified && !shouldSetLastModified)
-      || (!shouldSetEtag && isLastModifiedRecentEnough);
+    // If etag matches, ignore "if-modified-since" condition
+    const isNotModified = isEtagNotModified
+      || (requestDoesNotHaveIfNoneMatch && isLastModifiedRecentEnough);
 
     if (isNotModified) {
       responseStatus = 304;
