@@ -12,6 +12,7 @@ import { socketId } from '../src/middlewares/socket-id.js';
 import { staticFile } from '../src/middlewares/static-file.js';
 import { sendJson } from '../src/lib/send-json.js';
 import { route } from '../src/middlewares/route.js';
+import { notFound } from '../src/middlewares/not-found.js';
 
 function isGet (middleware) {
   return (context) => {
@@ -66,11 +67,7 @@ http
           contentEncoding({ gzip: true, brotli: true }),
           contentLength(),
           notModified({ etag: true, notModified: true }),
-          (context) => {
-            if (context.responseStatus == null) {
-              return { ...context, responseStatus: 404 };
-            }
-          },
+          notFound(),
         ]),
       ),
     ),
