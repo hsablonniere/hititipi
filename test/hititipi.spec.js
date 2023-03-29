@@ -2,10 +2,10 @@ import assert from 'assert';
 import http from 'http';
 import sinon from 'sinon';
 import supertest from 'supertest';
-import { expectNullHeaders } from './lib/test-utils.js';
+import { expectNullHeaders } from './lib-test/test-utils.js';
 import { hititipi } from '../src/hititipi.js';
 import { Readable } from 'stream';
-import { streamToString } from './lib/stream-utils.js';
+import { streamToString } from './lib-test/stream-utils.js';
 
 describe('hititipi', () => {
 

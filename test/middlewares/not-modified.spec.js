@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import { ALL_BUT_HEAD_GET, assertEqualContexts, assertEqualContextsOrNull, HEAD_GET } from '../lib/test-utils.js';
+import { ALL_BUT_HEAD_GET, assertEqualContexts, assertEqualContextsOrNull, HEAD_GET } from '../lib-test/test-utils.js';
 import { notModified } from '../../src/middlewares/not-modified.js';
 import { Readable } from 'stream';
 

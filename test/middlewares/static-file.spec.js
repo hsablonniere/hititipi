@@ -2,9 +2,9 @@ import assert from 'assert';
 import fs from 'fs/promises';
 import path from 'path';
 import sinon from 'sinon';
-import { ALL_BUT_HEAD_GET, assertEqualContextsOrNull, HEAD_GET } from '../lib/test-utils.js';
+import { ALL_BUT_HEAD_GET, assertEqualContextsOrNull, HEAD_GET } from '../lib-test/test-utils.js';
 import { staticFile } from '../../src/middlewares/static-file.js';
-import { streamToBuffer, streamToString } from '../lib/stream-utils.js';
+import { streamToBuffer, streamToString } from '../lib-test/stream-utils.js';
 
 const INIT_CONTEXT = {
   requestMethod: 'GET',

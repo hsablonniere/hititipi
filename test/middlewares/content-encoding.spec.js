@@ -5,7 +5,7 @@ import { contentEncoding } from '../../src/middlewares/content-encoding.js';
 import { Readable } from 'stream';
 import { getStrongEtagHash, getWeakEtag } from '../../src/lib/etag.js';
 import { BrotliCompress, createBrotliCompress, createGzip, Gzip } from 'zlib';
-import { assertEqualContexts, assertEqualContextsOrNull } from '../lib/test-utils.js';
+import { assertEqualContexts, assertEqualContextsOrNull } from '../lib-test/test-utils.js';
 
 const INIT_CONTEXT = {
   requestMethod: 'GET',
