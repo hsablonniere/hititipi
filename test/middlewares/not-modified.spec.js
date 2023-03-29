@@ -283,7 +283,7 @@ describe('not-modified middleware', () => {
       }
     });
 
-    it('keep headers when "if-none-match" matches but not "if-modified-since" with HEAD/GET', async () => {
+    it('return 304 and remove some headers when "if-none-match" matches but not "if-modified-since" with HEAD/GET', async () => {
       for (const requestMethod of HEAD_GET) {
         const initContext = {
           ...INIT_CONTEXT,
@@ -297,10 +297,10 @@ describe('not-modified middleware', () => {
         const context = await notModifiedWithBoth(initContext);
         await assertEqualContexts(context, {
           ...initContext,
+          responseStatus: 304,
           responseHeaders: {
-            ...INIT_CONTEXT.responseHeaders,
+            'x-foo': 'foo',
             'etag': ETAG_FOO,
-            'last-modified': CURRENT_DATE.toGMTString(),
           },
         });
       }
