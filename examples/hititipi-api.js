@@ -5,14 +5,13 @@ import { chainUntilResponse } from '../src/middlewares/chain-until-response.js';
 import { contentEncoding } from '../src/middlewares/content-encoding.js';
 import { contentLength } from '../src/middlewares/content-length.js';
 import { cors } from '../src/middlewares/cors.js';
-import { getStrongEtagHash } from '../src/lib/etag.js';
 import { hititipi } from '../src/hititipi.js';
 import { logRequest } from '../src/middlewares/log-request.js';
 import { notModified } from '../src/middlewares/not-modified.js';
-import { Readable } from 'stream';
 import { serverName } from '../src/middlewares/server-name.js';
 import { socketId } from '../src/middlewares/socket-id.js';
 import { staticFile } from '../src/middlewares/static-file.js';
+import { sendJson } from '../src/lib/send-json.js';
 
 function matchesPath (pathname, middleware) {
   return (context) => {
@@ -38,19 +37,6 @@ function isPut (middleware) {
   };
 }
 
-function json (context, object) {
-  const responseStatus = 200;
-  const content = JSON.stringify(object);
-  const responseBody = Readable.from(content);
-  const responseSize = content.length;
-  const responseEtag = getStrongEtagHash(content);
-  const responseHeaders = {
-    ...context.responseHeaders,
-    'content-type': 'application/json',
-  };
-  return { ...context, responseStatus, responseHeaders, responseBody, responseSize, responseEtag };
-}
-
 function sendStatus (responseStatus) {
   return (context) => {
     return { ...context, responseStatus };
@@ -72,7 +58,13 @@ http
                 exposeHeaders: ['x-socket-id'],
                 allowHeaders: ['x-foo'],
               }),
-              isGet((context) => json(context, { foo: 'bar', baz: 42, head: context.requestHeaders['x-foo'] })),
+              isGet((context) => {
+                return sendJson(context, 200, {
+                  foo: 'bar',
+                  baz: 42,
+                  head: context.requestHeaders['x-foo'],
+                });
+              }),
               isPut(sendStatus(204)),
               sendStatus(412),
               cacheControl({ 'public': true, 'must-revalidate': true, 'max-age': 0 }),
