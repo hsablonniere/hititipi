@@ -1,5 +1,4 @@
 import http from 'http';
-import { cacheControl } from '../src/middlewares/cache-control.js';
 import { chainAll } from '../src/middlewares/chain-all.js';
 import { chainUntilResponse } from '../src/middlewares/chain-until-response.js';
 import { contentEncoding } from '../src/middlewares/content-encoding.js';
@@ -67,7 +66,6 @@ http
               }),
               isPut(sendStatus(204)),
               sendStatus(412),
-              cacheControl({ 'public': true, 'must-revalidate': true, 'max-age': 0 }),
             ])),
           ]),
           serverName({ serverName: 'hititipi-json' }),
