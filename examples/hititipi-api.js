@@ -11,14 +11,7 @@ import { serverName } from '../src/middlewares/server-name.js';
 import { socketId } from '../src/middlewares/socket-id.js';
 import { staticFile } from '../src/middlewares/static-file.js';
 import { sendJson } from '../src/lib/send-json.js';
-
-function matchesPath (pathname, middleware) {
-  return (context) => {
-    if (context.requestUrl.pathname === pathname) {
-      return middleware;
-    }
-  };
-}
+import { route } from '../src/middlewares/route.js';
 
 function isGet (middleware) {
   return (context) => {
@@ -48,8 +41,8 @@ http
       logRequest(
         chainAll([
           chainUntilResponse([
-            matchesPath('/', staticFile({ root: 'public/api' })),
-            matchesPath('/api/foobar', chainUntilResponse([
+            route('*', '/', staticFile({ root: 'public/api' })),
+            route('*', '/api/foobar', chainUntilResponse([
               cors({
                 allowOrigin: '*',
                 maxAge: 5,

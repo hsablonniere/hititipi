@@ -23,6 +23,7 @@
     "cookie": "^0.4.1",
     "mime-types": "^2.1.29",
     "node-zopfli": "^2.1.4",
+    "path-to-regexp": "^6.2.1",
     "range-parser": "^1.2.1"
   },
   "devDependencies": {
