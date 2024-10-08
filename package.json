@@ -19,6 +19,7 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@bokuweb/zstd-wasm": "0.0.21-alpha.5",
     "compressible": "2.0.18",
     "cookie-es": "1.2.2",
     "mime-types": "2.1.35",
