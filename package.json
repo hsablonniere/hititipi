@@ -24,8 +24,7 @@
     "cookie-es": "1.2.2",
     "mime-types": "2.1.35",
     "path-to-regexp": "8.2.0",
-    "undici": "6.19.8",
-    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.48.0"
+    "undici": "6.19.8"
   },
   "devDependencies": {
     "@eslint/js": "9.12.0",
