@@ -1,6 +1,6 @@
 // https://github.com/microsoft/TypeScript/blob/main/tests/baselines/reference/config/initTSConfig/Default%20initialized%20TSConfig/tsconfig.json
 {
-  "include": ["src/**/*"],
+  "include": ["examples/**/*", "src/**/*"],
   "exclude": ["public"],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
