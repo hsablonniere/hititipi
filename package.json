@@ -9,17 +9,19 @@
     "src"
   ],
   "scripts": {
-    "check": "npm run lint:fix && npm run format",
+    "check": "npm run lint:fix && npm run format && npm run typecheck",
     "format": "prettier --config .prettierrc.js --write --cache .",
     "format:check": "prettier --config .prettierrc.js --check .",
     "lint": "eslint -c config/eslint.config.js",
-    "lint:fix": "eslint -c config/eslint.config.js --fix"
+    "lint:fix": "eslint -c config/eslint.config.js --fix",
+    "typecheck": "tsc -p tsconfig.json"
   },
   "devDependencies": {
     "@eslint/js": "9.12.0",
     "eslint": "9.12.0",
     "prettier": "3.3.3",
-    "prettier-plugin-organize-imports": "4.1.0"
+    "prettier-plugin-organize-imports": "4.1.0",
+    "typescript": "5.6.3"
   },
   "volta": {
     "node": "22.9.0"
