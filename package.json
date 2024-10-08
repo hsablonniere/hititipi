@@ -9,11 +9,13 @@
     "src"
   ],
   "scripts": {
-    "check": "npm run lint:fix && npm run format && npm run typecheck",
+    "check": "npm run lint:fix && npm run format && npm run typecheck && npm run test",
     "format": "prettier --config .prettierrc.js --write --cache .",
     "format:check": "prettier --config .prettierrc.js --check .",
     "lint": "eslint -c config/eslint.config.js",
     "lint:fix": "eslint -c config/eslint.config.js --fix",
+    "test": "node --test \"src/**/*.test.js\"",
+    "test:watch": "node --test --watch \"src/**/*.test.js\"",
     "typecheck": "tsc -p tsconfig.json"
   },
   "devDependencies": {
