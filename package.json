@@ -8,9 +8,15 @@
   "files": [
     "src"
   ],
-  "scripts": {},
-  "dependencies": {},
-  "devDependencies": {},
+  "scripts": {
+    "check": "npm run lint:fix",
+    "lint": "eslint -c config/eslint.config.js",
+    "lint:fix": "eslint -c config/eslint.config.js --fix"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.12.0",
+    "eslint": "9.12.0"
+  },
   "volta": {
     "node": "22.9.0"
   }
