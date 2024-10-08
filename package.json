@@ -19,6 +19,7 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "compressible": "2.0.18",
     "cookie-es": "1.2.2",
     "mime-types": "2.1.35"
   },
