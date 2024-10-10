@@ -9,6 +9,9 @@
  */
 export function keepAlive(options) {
   return async (context) => {
+    if (context.requestHttpVersion !== 1) {
+      return;
+    }
     if (options.enabled) {
       context.responseHeaders.set('connection', 'keep-alive');
       if (options.timeout != null && options.maxRequests != null) {
