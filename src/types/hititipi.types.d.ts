@@ -13,14 +13,14 @@ export type HititipiMethod =
 export type HeadersAsObject = Record<string, string | Array<string> | undefined>;
 
 export interface HititipiContext {
-  requestTimestamp: number;
-  requestId: string;
-  requestIps: Array<string>;
-  requestMethod: HititipiMethod;
-  requestUrl: URL;
-  requestHeaders: Headers;
+  readonly requestTimestamp: number;
+  readonly requestId: string;
+  readonly requestIps: Array<string>;
+  readonly requestMethod: HititipiMethod;
+  readonly requestUrl: URL;
+  readonly requestHeaders: Headers;
   responseStatus?: number;
-  responseHeaders: Headers;
+  readonly responseHeaders: Headers;
   responseBody?: string | ArrayBuffer | ReadableStream;
   responseSize?: number;
   responseModificationDate?: Date;

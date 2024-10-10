@@ -118,10 +118,9 @@ describe('middleware / not-modified', () => {
     });
 
     it('POST with single if-none-match (one match) should return 200 and not add etag', async () => {
-      const context = initTestContext();
+      const context = initTestContext({ requestMethod: 'POST' });
       context.requestHeaders.set('if-none-match', 'W/"123456"');
       context.responseStatus = 200;
-      context.requestMethod = 'POST';
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
@@ -230,9 +229,8 @@ describe('middleware / not-modified', () => {
     });
 
     it('POST with if-modified-since after responseModificationDate should return 200 and not add last-modified', async () => {
-      const context = initTestContext();
+      const context = initTestContext({ requestMethod: 'POST' });
       context.requestHeaders.set('if-modified-since', 'Wed, 01 Jan 2025 00:00:00 GMT');
-      context.requestMethod = 'POST';
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -381,10 +379,9 @@ describe('middleware / not-modified', () => {
     });
 
     it('POST with single if-none-match (one match) and if-modified-since before responseModificationDate should return 200 and not add etag or last-modified', async () => {
-      const context = initTestContext();
+      const context = initTestContext({ requestMethod: 'POST' });
       context.requestHeaders.set('if-none-match', 'W/"123456"');
       context.requestHeaders.set('if-modified-since', 'Sun, 01 Jan 2023 00:00:00 GMT');
-      context.requestMethod = 'POST';
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -399,10 +396,9 @@ describe('middleware / not-modified', () => {
     });
 
     it('POST with single if-none-match (no match) and if-modified-since after responseModificationDate should return 200 and not add etag or last-modified', async () => {
-      const context = initTestContext();
+      const context = initTestContext({ requestMethod: 'POST' });
       context.requestHeaders.set('if-none-match', 'W/"abcdef"');
       context.requestHeaders.set('if-modified-since', 'Wed, 01 Jan 2025 00:00:00 GMT');
-      context.requestMethod = 'POST';
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');

@@ -85,14 +85,12 @@ export const mainMiddleware = chainAll([
   frameOptions({ mode: 'DENY' }),
   contentTypeOptions({ noSniff: true }),
   chainUntilResponse([
-    ifHostname('github.localhost', async (context) => {
-      await proxy({ origin: 'https://github.com' })(context);
-    }),
+    ifHostname('github.localhost', proxy({ origin: 'https://github.com' })),
     ifHostname('foo.localhost', async (context) => {
-      await sendJson(200, { msg: `Hello from ${context.requestUrl.hostname}` })(context);
+      return sendJson(200, { msg: `Hello from ${context.requestUrl.hostname}` })(context);
     }),
     ifHostname('bar.localhost', async (context) => {
-      await sendJson(200, { msg: `Hello from ${context.requestUrl.hostname}` })(context);
+      return sendJson(200, { msg: `Hello from ${context.requestUrl.hostname}` })(context);
     }),
     route('GET', '/test', () => sendFile('./public/test/index.html')),
     route('GET', '/secret', () => {
