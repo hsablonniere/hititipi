@@ -31,6 +31,7 @@ export function hititipi(applyMiddleware) {
       requestTimestamp: Date.now(),
       requestId: getRandomId(),
       requestIps: getRequestIps(nodeRequest.socket.remoteAddress, requestHeaders),
+      requestHttpVersion: nodeRequest.httpVersionMajor,
       requestMethod: nodeRequest.method ?? 'GET',
       requestUrl: getRequestUrl(nodeRequest.url ?? '/', requestHeaders),
       requestHeaders,

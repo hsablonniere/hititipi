@@ -16,6 +16,7 @@ export interface HititipiContext {
   readonly requestTimestamp: number;
   readonly requestId: string;
   readonly requestIps: Array<string>;
+  readonly requestHttpVersion: 1 | 2 | number;
   readonly requestMethod: HititipiMethod;
   readonly requestUrl: URL;
   readonly requestHeaders: Headers;
