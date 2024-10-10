@@ -9,6 +9,5 @@
 export function serverName(serverName) {
   return async (context) => {
     context.responseHeaders.set('server', serverName);
-    return context;
   };
 }

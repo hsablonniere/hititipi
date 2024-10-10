@@ -6,55 +6,55 @@ import { referrerPolicy } from './referrer-policy.js';
 describe('middleware / referrer-policy', () => {
   it('no policy', async () => {
     const context = initTestContext();
-    const newContext = await referrerPolicy({})(context);
-    assert.equal(newContext.responseHeaders.get('referrer-policy'), null);
+    await referrerPolicy({})(context);
+    assert.equal(context.responseHeaders.get('referrer-policy'), null);
   });
 
   it('policy:no-referrer', async () => {
     const context = initTestContext();
-    const newContext = await referrerPolicy({ policy: 'no-referrer' })(context);
-    assert.equal(newContext.responseHeaders.get('referrer-policy'), 'no-referrer');
+    await referrerPolicy({ policy: 'no-referrer' })(context);
+    assert.equal(context.responseHeaders.get('referrer-policy'), 'no-referrer');
   });
 
   it('policy:no-referrer-when-downgrade', async () => {
     const context = initTestContext();
-    const newContext = await referrerPolicy({ policy: 'no-referrer-when-downgrade' })(context);
-    assert.equal(newContext.responseHeaders.get('referrer-policy'), 'no-referrer-when-downgrade');
+    await referrerPolicy({ policy: 'no-referrer-when-downgrade' })(context);
+    assert.equal(context.responseHeaders.get('referrer-policy'), 'no-referrer-when-downgrade');
   });
 
   it('policy:origin', async () => {
     const context = initTestContext();
-    const newContext = await referrerPolicy({ policy: 'origin' })(context);
-    assert.equal(newContext.responseHeaders.get('referrer-policy'), 'origin');
+    await referrerPolicy({ policy: 'origin' })(context);
+    assert.equal(context.responseHeaders.get('referrer-policy'), 'origin');
   });
 
   it('policy:origin-when-cross-origin', async () => {
     const context = initTestContext();
-    const newContext = await referrerPolicy({ policy: 'origin-when-cross-origin' })(context);
-    assert.equal(newContext.responseHeaders.get('referrer-policy'), 'origin-when-cross-origin');
+    await referrerPolicy({ policy: 'origin-when-cross-origin' })(context);
+    assert.equal(context.responseHeaders.get('referrer-policy'), 'origin-when-cross-origin');
   });
 
   it('policy:same-origin', async () => {
     const context = initTestContext();
-    const newContext = await referrerPolicy({ policy: 'same-origin' })(context);
-    assert.equal(newContext.responseHeaders.get('referrer-policy'), 'same-origin');
+    await referrerPolicy({ policy: 'same-origin' })(context);
+    assert.equal(context.responseHeaders.get('referrer-policy'), 'same-origin');
   });
 
   it('policy:strict-origin', async () => {
     const context = initTestContext();
-    const newContext = await referrerPolicy({ policy: 'strict-origin' })(context);
-    assert.equal(newContext.responseHeaders.get('referrer-policy'), 'strict-origin');
+    await referrerPolicy({ policy: 'strict-origin' })(context);
+    assert.equal(context.responseHeaders.get('referrer-policy'), 'strict-origin');
   });
 
   it('policy:strict-origin-when-cross-origin', async () => {
     const context = initTestContext();
-    const newContext = await referrerPolicy({ policy: 'strict-origin-when-cross-origin' })(context);
-    assert.equal(newContext.responseHeaders.get('referrer-policy'), 'strict-origin-when-cross-origin');
+    await referrerPolicy({ policy: 'strict-origin-when-cross-origin' })(context);
+    assert.equal(context.responseHeaders.get('referrer-policy'), 'strict-origin-when-cross-origin');
   });
 
   it('policy:unsafe-url', async () => {
     const context = initTestContext();
-    const newContext = await referrerPolicy({ policy: 'unsafe-url' })(context);
-    assert.equal(newContext.responseHeaders.get('referrer-policy'), 'unsafe-url');
+    await referrerPolicy({ policy: 'unsafe-url' })(context);
+    assert.equal(context.responseHeaders.get('referrer-policy'), 'unsafe-url');
   });
 });

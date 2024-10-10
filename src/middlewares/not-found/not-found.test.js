@@ -6,8 +6,8 @@ import { notFound } from './not-found.js';
 describe('middleware / not-found', () => {
   it('no options', async () => {
     const context = initTestContext();
-    const newContext = await notFound()(context);
-    assert.equal(newContext.responseStatus, 404);
-    assert.equal(newContext.responseBody, '');
+    await notFound()(context);
+    assert.equal(context.responseStatus, 404);
+    assert.equal(context.responseBody, '');
   });
 });

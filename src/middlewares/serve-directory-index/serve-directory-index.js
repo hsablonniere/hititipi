@@ -19,7 +19,7 @@ export function serveDirectoryIndex(options) {
 
   return async (context) => {
     if (context.requestMethod !== 'HEAD' && context.requestMethod !== 'GET') {
-      return context;
+      return;
     }
 
     const pathname =
@@ -30,7 +30,7 @@ export function serveDirectoryIndex(options) {
 
     const stats = getStats(absolutePathname);
     if (stats == null || !stats.isDirectory()) {
-      return context;
+      return;
     }
 
     const dirEntries = await getDirectoryEntries(absolutePathname, showHidden);
@@ -41,8 +41,6 @@ export function serveDirectoryIndex(options) {
     context.responseBody = content;
     context.responseSize = Buffer.from(content).length;
     context.responseEtag = await getStrongEtagHash(content);
-
-    return context;
   };
 }
 

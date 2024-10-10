@@ -17,7 +17,7 @@ const initZstdOnce = runOnce(initZstd);
 export function compressWithZstd(options) {
   return async (context) => {
     if (!isCompressible(context) || !acceptsEncodings(context, CONTENT_ENCODING)) {
-      return context;
+      return;
     }
 
     context.responseHeaders.set('content-encoding', CONTENT_ENCODING);
@@ -40,8 +40,6 @@ export function compressWithZstd(options) {
       context.responseEtag.value += '.' + CONTENT_ENCODING;
       context.responseEtag.weak = true;
     }
-
-    return context;
   };
 }
 

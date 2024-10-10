@@ -16,12 +16,12 @@ describe('middleware / not-modified', () => {
     context.responseHeaders.set('x-foo', 'bar');
     context.responseEtag = { value: '123456', weak: true };
     context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-    const newContext = await notModified({ etag: false, lastModified: false })(context);
-    assert.equal(newContext.responseStatus, 200);
+    await notModified({ etag: false, lastModified: false })(context);
+    assert.equal(context.responseStatus, 200);
     assert.equal(context.responseHeaders.get('server'), 'the-server');
     assert.equal(context.responseHeaders.get('x-foo'), 'bar');
-    assert.equal(newContext.responseHeaders.get('etag'), null);
-    assert.equal(newContext.responseHeaders.get('last-modified'), null);
+    assert.equal(context.responseHeaders.get('etag'), null);
+    assert.equal(context.responseHeaders.get('last-modified'), null);
   });
 
   describe('etag option enabled', () => {
@@ -30,12 +30,12 @@ describe('middleware / not-modified', () => {
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
-      const newContext = await notModified({ etag: true, lastModified: false })(context);
-      assert.equal(newContext.responseStatus, 200);
+      await notModified({ etag: true, lastModified: false })(context);
+      assert.equal(context.responseStatus, 200);
       assert.equal(context.responseHeaders.get('server'), 'the-server');
       assert.equal(context.responseHeaders.get('x-foo'), 'bar');
-      assert.equal(newContext.responseHeaders.get('etag'), null);
-      assert.equal(newContext.responseHeaders.get('last-modified'), null);
+      assert.equal(context.responseHeaders.get('etag'), null);
+      assert.equal(context.responseHeaders.get('last-modified'), null);
     });
 
     it('GET with no if-none-match should return 200 and add etag', async () => {
@@ -45,12 +45,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: true, lastModified: false })(context);
-      assert.equal(newContext.responseStatus, 200);
+      await notModified({ etag: true, lastModified: false })(context);
+      assert.equal(context.responseStatus, 200);
       assert.equal(context.responseHeaders.get('server'), 'the-server');
       assert.equal(context.responseHeaders.get('x-foo'), 'bar');
-      assert.equal(newContext.responseHeaders.get('etag'), 'W/"123456"');
-      assert.equal(newContext.responseHeaders.get('last-modified'), null);
+      assert.equal(context.responseHeaders.get('etag'), 'W/"123456"');
+      assert.equal(context.responseHeaders.get('last-modified'), null);
     });
 
     it('GET with single if-none-match (no match) should return 200 and add etag', async () => {
@@ -61,12 +61,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: true, lastModified: false })(context);
-      assert.equal(newContext.responseStatus, 200);
+      await notModified({ etag: true, lastModified: false })(context);
+      assert.equal(context.responseStatus, 200);
       assert.equal(context.responseHeaders.get('server'), 'the-server');
       assert.equal(context.responseHeaders.get('x-foo'), 'bar');
-      assert.equal(newContext.responseHeaders.get('etag'), 'W/"123456"');
-      assert.equal(newContext.responseHeaders.get('last-modified'), null);
+      assert.equal(context.responseHeaders.get('etag'), 'W/"123456"');
+      assert.equal(context.responseHeaders.get('last-modified'), null);
     });
 
     it('GET with multiple if-none-match (no match) should return 200 and add etag', async () => {
@@ -77,12 +77,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: true, lastModified: false })(context);
-      assert.equal(newContext.responseStatus, 200);
+      await notModified({ etag: true, lastModified: false })(context);
+      assert.equal(context.responseStatus, 200);
       assert.equal(context.responseHeaders.get('server'), 'the-server');
       assert.equal(context.responseHeaders.get('x-foo'), 'bar');
-      assert.equal(newContext.responseHeaders.get('etag'), 'W/"123456"');
-      assert.equal(newContext.responseHeaders.get('last-modified'), null);
+      assert.equal(context.responseHeaders.get('etag'), 'W/"123456"');
+      assert.equal(context.responseHeaders.get('last-modified'), null);
     });
 
     it('GET with single if-none-match (one match) should return 304, add etag and clean response headers', async () => {
@@ -93,12 +93,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: true, lastModified: false })(context);
-      assert.equal(newContext.responseStatus, 304);
+      await notModified({ etag: true, lastModified: false })(context);
+      assert.equal(context.responseStatus, 304);
       assert.equal(context.responseHeaders.get('server'), null);
       assert.equal(context.responseHeaders.get('x-foo'), null);
-      assert.equal(newContext.responseHeaders.get('etag'), 'W/"123456"');
-      assert.equal(newContext.responseHeaders.get('last-modified'), null);
+      assert.equal(context.responseHeaders.get('etag'), 'W/"123456"');
+      assert.equal(context.responseHeaders.get('last-modified'), null);
     });
 
     it('GET with multiple if-none-match (one match) should return 304, add etag and clean response headers', async () => {
@@ -109,12 +109,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: true, lastModified: false })(context);
-      assert.equal(newContext.responseStatus, 304);
+      await notModified({ etag: true, lastModified: false })(context);
+      assert.equal(context.responseStatus, 304);
       assert.equal(context.responseHeaders.get('server'), null);
       assert.equal(context.responseHeaders.get('x-foo'), null);
-      assert.equal(newContext.responseHeaders.get('etag'), 'W/"123456"');
-      assert.equal(newContext.responseHeaders.get('last-modified'), null);
+      assert.equal(context.responseHeaders.get('etag'), 'W/"123456"');
+      assert.equal(context.responseHeaders.get('last-modified'), null);
     });
 
     it('POST with single if-none-match (one match) should return 200 and not add etag', async () => {
@@ -126,12 +126,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: true, lastModified: false })(context);
-      assert.equal(newContext.responseStatus, 200);
+      await notModified({ etag: true, lastModified: false })(context);
+      assert.equal(context.responseStatus, 200);
       assert.equal(context.responseHeaders.get('server'), 'the-server');
       assert.equal(context.responseHeaders.get('x-foo'), 'bar');
-      assert.equal(newContext.responseHeaders.get('etag'), null);
-      assert.equal(newContext.responseHeaders.get('last-modified'), null);
+      assert.equal(context.responseHeaders.get('etag'), null);
+      assert.equal(context.responseHeaders.get('last-modified'), null);
     });
   });
 
@@ -142,12 +142,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
-      const newContext = await notModified({ etag: false, lastModified: true })(context);
-      assert.equal(newContext.responseStatus, 200);
+      await notModified({ etag: false, lastModified: true })(context);
+      assert.equal(context.responseStatus, 200);
       assert.equal(context.responseHeaders.get('server'), 'the-server');
       assert.equal(context.responseHeaders.get('x-foo'), 'bar');
-      assert.equal(newContext.responseHeaders.get('etag'), null);
-      assert.equal(newContext.responseHeaders.get('last-modified'), null);
+      assert.equal(context.responseHeaders.get('etag'), null);
+      assert.equal(context.responseHeaders.get('last-modified'), null);
     });
 
     it('GET with no if-modified-since should return 200 and add last-modified', async () => {
@@ -157,12 +157,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: false, lastModified: true })(context);
-      assert.equal(newContext.responseStatus, 200);
+      await notModified({ etag: false, lastModified: true })(context);
+      assert.equal(context.responseStatus, 200);
       assert.equal(context.responseHeaders.get('server'), 'the-server');
       assert.equal(context.responseHeaders.get('x-foo'), 'bar');
-      assert.equal(newContext.responseHeaders.get('etag'), null);
-      assert.equal(newContext.responseHeaders.get('last-modified'), 'Mon, 01 Jan 2024 00:00:00 GMT');
+      assert.equal(context.responseHeaders.get('etag'), null);
+      assert.equal(context.responseHeaders.get('last-modified'), 'Mon, 01 Jan 2024 00:00:00 GMT');
     });
 
     it('GET with if-modified-since before responseModificationDate should return 200 and add last-modified', async () => {
@@ -173,12 +173,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: false, lastModified: true })(context);
-      assert.equal(newContext.responseStatus, 200);
+      await notModified({ etag: false, lastModified: true })(context);
+      assert.equal(context.responseStatus, 200);
       assert.equal(context.responseHeaders.get('server'), 'the-server');
       assert.equal(context.responseHeaders.get('x-foo'), 'bar');
-      assert.equal(newContext.responseHeaders.get('etag'), null);
-      assert.equal(newContext.responseHeaders.get('last-modified'), 'Mon, 01 Jan 2024 00:00:00 GMT');
+      assert.equal(context.responseHeaders.get('etag'), null);
+      assert.equal(context.responseHeaders.get('last-modified'), 'Mon, 01 Jan 2024 00:00:00 GMT');
     });
 
     it('GET with if-modified-since after responseModificationDate should return 304, add last-modified and clean response headers', async () => {
@@ -189,12 +189,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: false, lastModified: true })(context);
-      assert.equal(newContext.responseStatus, 304);
+      await notModified({ etag: false, lastModified: true })(context);
+      assert.equal(context.responseStatus, 304);
       assert.equal(context.responseHeaders.get('server'), null);
       assert.equal(context.responseHeaders.get('x-foo'), null);
-      assert.equal(newContext.responseHeaders.get('etag'), null);
-      assert.equal(newContext.responseHeaders.get('last-modified'), 'Mon, 01 Jan 2024 00:00:00 GMT');
+      assert.equal(context.responseHeaders.get('etag'), null);
+      assert.equal(context.responseHeaders.get('last-modified'), 'Mon, 01 Jan 2024 00:00:00 GMT');
     });
 
     it('GET with if-modified-since same as responseModificationDate should return 304, add last-modified and clean response headers', async () => {
@@ -205,12 +205,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: false, lastModified: true })(context);
-      assert.equal(newContext.responseStatus, 304);
+      await notModified({ etag: false, lastModified: true })(context);
+      assert.equal(context.responseStatus, 304);
       assert.equal(context.responseHeaders.get('server'), null);
       assert.equal(context.responseHeaders.get('x-foo'), null);
-      assert.equal(newContext.responseHeaders.get('etag'), null);
-      assert.equal(newContext.responseHeaders.get('last-modified'), 'Mon, 01 Jan 2024 00:00:00 GMT');
+      assert.equal(context.responseHeaders.get('etag'), null);
+      assert.equal(context.responseHeaders.get('last-modified'), 'Mon, 01 Jan 2024 00:00:00 GMT');
     });
 
     it('GET with if-modified-since same (but different millisecond) as responseModificationDate should return 304, add last-modified and clean response headers', async () => {
@@ -221,12 +221,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.100Z');
-      const newContext = await notModified({ etag: false, lastModified: true })(context);
-      assert.equal(newContext.responseStatus, 304);
+      await notModified({ etag: false, lastModified: true })(context);
+      assert.equal(context.responseStatus, 304);
       assert.equal(context.responseHeaders.get('server'), null);
       assert.equal(context.responseHeaders.get('x-foo'), null);
-      assert.equal(newContext.responseHeaders.get('etag'), null);
-      assert.equal(newContext.responseHeaders.get('last-modified'), 'Mon, 01 Jan 2024 00:00:00 GMT');
+      assert.equal(context.responseHeaders.get('etag'), null);
+      assert.equal(context.responseHeaders.get('last-modified'), 'Mon, 01 Jan 2024 00:00:00 GMT');
     });
 
     it('POST with if-modified-since after responseModificationDate should return 200 and not add last-modified', async () => {
@@ -238,12 +238,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: false, lastModified: true })(context);
-      assert.equal(newContext.responseStatus, 200);
+      await notModified({ etag: false, lastModified: true })(context);
+      assert.equal(context.responseStatus, 200);
       assert.equal(context.responseHeaders.get('server'), 'the-server');
       assert.equal(context.responseHeaders.get('x-foo'), 'bar');
-      assert.equal(newContext.responseHeaders.get('etag'), null);
-      assert.equal(newContext.responseHeaders.get('last-modified'), null);
+      assert.equal(context.responseHeaders.get('etag'), null);
+      assert.equal(context.responseHeaders.get('last-modified'), null);
     });
   });
 
@@ -255,12 +255,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: true, lastModified: true })(context);
-      assert.equal(newContext.responseStatus, 200);
+      await notModified({ etag: true, lastModified: true })(context);
+      assert.equal(context.responseStatus, 200);
       assert.equal(context.responseHeaders.get('server'), 'the-server');
       assert.equal(context.responseHeaders.get('x-foo'), 'bar');
-      assert.equal(newContext.responseHeaders.get('etag'), 'W/"123456"');
-      assert.equal(newContext.responseHeaders.get('last-modified'), 'Mon, 01 Jan 2024 00:00:00 GMT');
+      assert.equal(context.responseHeaders.get('etag'), 'W/"123456"');
+      assert.equal(context.responseHeaders.get('last-modified'), 'Mon, 01 Jan 2024 00:00:00 GMT');
     });
 
     it('GET with single if-none-match (no match) and if-modified-since before responseModificationDate should return 200 and add etag and last-modified', async () => {
@@ -272,12 +272,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: true, lastModified: true })(context);
-      assert.equal(newContext.responseStatus, 200);
+      await notModified({ etag: true, lastModified: true })(context);
+      assert.equal(context.responseStatus, 200);
       assert.equal(context.responseHeaders.get('server'), 'the-server');
       assert.equal(context.responseHeaders.get('x-foo'), 'bar');
-      assert.equal(newContext.responseHeaders.get('etag'), 'W/"123456"');
-      assert.equal(newContext.responseHeaders.get('last-modified'), 'Mon, 01 Jan 2024 00:00:00 GMT');
+      assert.equal(context.responseHeaders.get('etag'), 'W/"123456"');
+      assert.equal(context.responseHeaders.get('last-modified'), 'Mon, 01 Jan 2024 00:00:00 GMT');
     });
 
     it('GET with multiple if-none-match (no match) and if-modified-since before responseModificationDate should return 200 and add etag and last-modified', async () => {
@@ -289,12 +289,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: true, lastModified: true })(context);
-      assert.equal(newContext.responseStatus, 200);
+      await notModified({ etag: true, lastModified: true })(context);
+      assert.equal(context.responseStatus, 200);
       assert.equal(context.responseHeaders.get('server'), 'the-server');
       assert.equal(context.responseHeaders.get('x-foo'), 'bar');
-      assert.equal(newContext.responseHeaders.get('etag'), 'W/"123456"');
-      assert.equal(newContext.responseHeaders.get('last-modified'), 'Mon, 01 Jan 2024 00:00:00 GMT');
+      assert.equal(context.responseHeaders.get('etag'), 'W/"123456"');
+      assert.equal(context.responseHeaders.get('last-modified'), 'Mon, 01 Jan 2024 00:00:00 GMT');
     });
 
     it('GET with single if-none-match (one match) and if-modified-since before responseModificationDate should return 304, add etag and clean response headers', async () => {
@@ -306,12 +306,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: true, lastModified: true })(context);
-      assert.equal(newContext.responseStatus, 304);
+      await notModified({ etag: true, lastModified: true })(context);
+      assert.equal(context.responseStatus, 304);
       assert.equal(context.responseHeaders.get('server'), null);
       assert.equal(context.responseHeaders.get('x-foo'), null);
-      assert.equal(newContext.responseHeaders.get('etag'), 'W/"123456"');
-      assert.equal(newContext.responseHeaders.get('last-modified'), null);
+      assert.equal(context.responseHeaders.get('etag'), 'W/"123456"');
+      assert.equal(context.responseHeaders.get('last-modified'), null);
     });
 
     it('GET with multiple if-none-match (one match) and if-modified-since before responseModificationDate should return 304, add etag and clean response headers', async () => {
@@ -323,12 +323,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: true, lastModified: true })(context);
-      assert.equal(newContext.responseStatus, 304);
+      await notModified({ etag: true, lastModified: true })(context);
+      assert.equal(context.responseStatus, 304);
       assert.equal(context.responseHeaders.get('server'), null);
       assert.equal(context.responseHeaders.get('x-foo'), null);
-      assert.equal(newContext.responseHeaders.get('etag'), 'W/"123456"');
-      assert.equal(newContext.responseHeaders.get('last-modified'), null);
+      assert.equal(context.responseHeaders.get('etag'), 'W/"123456"');
+      assert.equal(context.responseHeaders.get('last-modified'), null);
     });
 
     it('GET with no etag and if-modified-since after responseModificationDate should return 304 and add last-modified and clean response headers', async () => {
@@ -338,12 +338,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: false, lastModified: true })(context);
-      assert.equal(newContext.responseStatus, 304);
+      await notModified({ etag: false, lastModified: true })(context);
+      assert.equal(context.responseStatus, 304);
       assert.equal(context.responseHeaders.get('server'), null);
       assert.equal(context.responseHeaders.get('x-foo'), null);
-      assert.equal(newContext.responseHeaders.get('etag'), null);
-      assert.equal(newContext.responseHeaders.get('last-modified'), 'Mon, 01 Jan 2024 00:00:00 GMT');
+      assert.equal(context.responseHeaders.get('etag'), null);
+      assert.equal(context.responseHeaders.get('last-modified'), 'Mon, 01 Jan 2024 00:00:00 GMT');
     });
 
     it('GET with single if-none-match (no match) and if-modified-since after responseModificationDate should return 304, add etag and clean response headers', async () => {
@@ -355,12 +355,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: true, lastModified: true })(context);
-      assert.equal(newContext.responseStatus, 304);
+      await notModified({ etag: true, lastModified: true })(context);
+      assert.equal(context.responseStatus, 304);
       assert.equal(context.responseHeaders.get('server'), null);
       assert.equal(context.responseHeaders.get('x-foo'), null);
-      assert.equal(newContext.responseHeaders.get('etag'), 'W/"123456"');
-      assert.equal(newContext.responseHeaders.get('last-modified'), null);
+      assert.equal(context.responseHeaders.get('etag'), 'W/"123456"');
+      assert.equal(context.responseHeaders.get('last-modified'), null);
     });
 
     it('GET with multiple if-none-match (no match) and if-modified-since after responseModificationDate should return 304, add etag and clean response headers', async () => {
@@ -372,12 +372,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: true, lastModified: true })(context);
-      assert.equal(newContext.responseStatus, 304);
+      await notModified({ etag: true, lastModified: true })(context);
+      assert.equal(context.responseStatus, 304);
       assert.equal(context.responseHeaders.get('server'), null);
       assert.equal(context.responseHeaders.get('x-foo'), null);
-      assert.equal(newContext.responseHeaders.get('etag'), 'W/"123456"');
-      assert.equal(newContext.responseHeaders.get('last-modified'), null);
+      assert.equal(context.responseHeaders.get('etag'), 'W/"123456"');
+      assert.equal(context.responseHeaders.get('last-modified'), null);
     });
 
     it('POST with single if-none-match (one match) and if-modified-since before responseModificationDate should return 200 and not add etag or last-modified', async () => {
@@ -390,12 +390,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: true, lastModified: true })(context);
-      assert.equal(newContext.responseStatus, 200);
+      await notModified({ etag: true, lastModified: true })(context);
+      assert.equal(context.responseStatus, 200);
       assert.equal(context.responseHeaders.get('server'), 'the-server');
       assert.equal(context.responseHeaders.get('x-foo'), 'bar');
-      assert.equal(newContext.responseHeaders.get('etag'), null);
-      assert.equal(newContext.responseHeaders.get('last-modified'), null);
+      assert.equal(context.responseHeaders.get('etag'), null);
+      assert.equal(context.responseHeaders.get('last-modified'), null);
     });
 
     it('POST with single if-none-match (no match) and if-modified-since after responseModificationDate should return 200 and not add etag or last-modified', async () => {
@@ -408,12 +408,12 @@ describe('middleware / not-modified', () => {
       context.responseHeaders.set('x-foo', 'bar');
       context.responseEtag = { value: '123456', weak: true };
       context.responseModificationDate = new Date('2024-01-01T00:00:00.000Z');
-      const newContext = await notModified({ etag: true, lastModified: true })(context);
-      assert.equal(newContext.responseStatus, 200);
+      await notModified({ etag: true, lastModified: true })(context);
+      assert.equal(context.responseStatus, 200);
       assert.equal(context.responseHeaders.get('server'), 'the-server');
       assert.equal(context.responseHeaders.get('x-foo'), 'bar');
-      assert.equal(newContext.responseHeaders.get('etag'), null);
-      assert.equal(newContext.responseHeaders.get('last-modified'), null);
+      assert.equal(context.responseHeaders.get('etag'), null);
+      assert.equal(context.responseHeaders.get('last-modified'), null);
     });
   });
 });

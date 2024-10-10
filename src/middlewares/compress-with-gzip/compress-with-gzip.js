@@ -17,7 +17,7 @@ const CONTENT_ENCODING = 'gzip';
 export function compressWithGzip(options) {
   return async (context) => {
     if (!isCompressible(context) || !acceptsEncodings(context, CONTENT_ENCODING)) {
-      return context;
+      return;
     }
 
     context.responseHeaders.set('content-encoding', CONTENT_ENCODING);
@@ -37,7 +37,5 @@ export function compressWithGzip(options) {
       context.responseEtag.value += '.' + CONTENT_ENCODING;
       context.responseEtag.weak = true;
     }
-
-    return context;
   };
 }

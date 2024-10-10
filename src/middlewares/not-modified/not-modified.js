@@ -13,7 +13,7 @@ import { etagToString } from '../../lib/etag.js';
 export function notModified(options) {
   return async (context) => {
     if ((context.requestMethod !== 'HEAD' && context.requestMethod !== 'GET') || context.responseStatus !== 200) {
-      return context;
+      return;
     }
 
     const responseEtag = etagToString(context.responseEtag);
@@ -47,8 +47,6 @@ export function notModified(options) {
         }
       }
     }
-
-    return context;
   };
 }
 
@@ -64,7 +62,6 @@ const IMPORTANT_NOT_MODIFIED_HEADERS = [
 
 /**
  * @param {HititipiContext} context
- * @return {HititipiContext}
  */
 function notModifiedResponse(context) {
   context.responseStatus = 304;
@@ -77,7 +74,6 @@ function notModifiedResponse(context) {
     }
     context.responseHeaders.delete(name);
   });
-  return context;
 }
 
 /**

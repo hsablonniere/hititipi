@@ -24,7 +24,6 @@ function appendHeader(headers, headerName, headerValue) {
 const appendToResponseHeader = (text) => {
   return async (context) => {
     appendHeader(context.responseHeaders, 'x-text', text);
-    return context;
   };
 };
 
@@ -34,7 +33,7 @@ const errorMiddleware = async () => {
 };
 
 /** @type {HititipiMiddleware} */
-const noop = async (context) => context;
+const noop = async () => {};
 
 describe('middleware / chain-until-response', () => {
   it('pass context from middleware to middleware', async () => {
@@ -44,9 +43,8 @@ describe('middleware / chain-until-response', () => {
       appendToResponseHeader('three'),
     ]);
     const context = initTestContext();
-    const newContext = await applyMiddleware(context);
-    assert.deepStrictEqual(newContext, context);
-    assert.strictEqual(newContext.responseHeaders.get('x-text'), 'one-two-three');
+    await applyMiddleware(context);
+    assert.strictEqual(context.responseHeaders.get('x-text'), 'one-two-three');
   });
 
   it('skip when middlewares are false', async () => {
@@ -58,9 +56,8 @@ describe('middleware / chain-until-response', () => {
       appendToResponseHeader('three'),
     ]);
     const context = initTestContext();
-    const newContext = await applyMiddleware(context);
-    assert.deepStrictEqual(newContext, context);
-    assert.strictEqual(newContext.responseHeaders.get('x-text'), 'one-three');
+    await applyMiddleware(context);
+    assert.strictEqual(context.responseHeaders.get('x-text'), 'one-three');
   });
 
   it('responseBody is not null, stop chain and return context', async () => {
@@ -69,17 +66,16 @@ describe('middleware / chain-until-response', () => {
       async (context) => {
         appendHeader(context.responseHeaders, 'x-text', 'two');
         context.responseBody = 'response-body';
-        return context;
       },
       appendToResponseHeader('three'),
     ]);
     const context = initTestContext();
-    const newContext = await applyMiddleware(context);
-    assert.deepStrictEqual(newContext, {
+    await applyMiddleware(context);
+    assert.deepStrictEqual(context, {
       ...context,
       responseBody: 'response-body',
     });
-    assert.strictEqual(newContext.responseHeaders.get('x-text'), 'one-two');
+    assert.strictEqual(context.responseHeaders.get('x-text'), 'one-two');
   });
 
   it('responseStatus is 204, stop chain and return context', async () => {
@@ -88,17 +84,16 @@ describe('middleware / chain-until-response', () => {
       async (context) => {
         appendHeader(context.responseHeaders, 'x-text', 'two');
         context.responseStatus = 204;
-        return context;
       },
       appendToResponseHeader('three'),
     ]);
     const context = initTestContext();
-    const newContext = await applyMiddleware(context);
-    assert.deepStrictEqual(newContext, {
+    await applyMiddleware(context);
+    assert.deepStrictEqual(context, {
       ...context,
       responseStatus: 204,
     });
-    assert.strictEqual(newContext.responseHeaders.get('x-text'), 'one-two');
+    assert.strictEqual(context.responseHeaders.get('x-text'), 'one-two');
   });
 
   it('responseStatus is 301, stop chain and return context', async () => {
@@ -107,17 +102,16 @@ describe('middleware / chain-until-response', () => {
       async (context) => {
         appendHeader(context.responseHeaders, 'x-text', 'two');
         context.responseStatus = 301;
-        return context;
       },
       appendToResponseHeader('three'),
     ]);
     const context = initTestContext();
-    const newContext = await applyMiddleware(context);
-    assert.deepStrictEqual(newContext, {
+    await applyMiddleware(context);
+    assert.deepStrictEqual(context, {
       ...context,
       responseStatus: 301,
     });
-    assert.strictEqual(newContext.responseHeaders.get('x-text'), 'one-two');
+    assert.strictEqual(context.responseHeaders.get('x-text'), 'one-two');
   });
 
   it('responseStatus is 302, stop chain and return context', async () => {
@@ -126,17 +120,16 @@ describe('middleware / chain-until-response', () => {
       async (context) => {
         appendHeader(context.responseHeaders, 'x-text', 'two');
         context.responseStatus = 302;
-        return context;
       },
       appendToResponseHeader('three'),
     ]);
     const context = initTestContext();
-    const newContext = await applyMiddleware(context);
-    assert.deepStrictEqual(newContext, {
+    await applyMiddleware(context);
+    assert.deepStrictEqual(context, {
       ...context,
       responseStatus: 302,
     });
-    assert.strictEqual(newContext.responseHeaders.get('x-text'), 'one-two');
+    assert.strictEqual(context.responseHeaders.get('x-text'), 'one-two');
   });
 
   it('responseStatus is 304, stop chain and return context', async () => {
@@ -145,17 +138,16 @@ describe('middleware / chain-until-response', () => {
       async (context) => {
         appendHeader(context.responseHeaders, 'x-text', 'two');
         context.responseStatus = 304;
-        return context;
       },
       appendToResponseHeader('three'),
     ]);
     const context = initTestContext();
-    const newContext = await applyMiddleware(context);
-    assert.deepStrictEqual(newContext, {
+    await applyMiddleware(context);
+    assert.deepStrictEqual(context, {
       ...context,
       responseStatus: 304,
     });
-    assert.strictEqual(newContext.responseHeaders.get('x-text'), 'one-two');
+    assert.strictEqual(context.responseHeaders.get('x-text'), 'one-two');
   });
 
   it('catch error in middlewares, stop chain and throw if onError is not defined', async () => {
@@ -197,12 +189,10 @@ describe('middleware / chain-until-response', () => {
     const middlewares = [errorMiddleware, postErrorMiddleware];
     const applyMiddleware = chainUntilResponse(middlewares, async (context, error) => {
       context.responseHeaders.set('x-error', error.message);
-      return context;
     });
     const context = initTestContext();
-    const newContext = await applyMiddleware(context);
+    await applyMiddleware(context);
     assert.strictEqual(postErrorMiddleware.mock.callCount(), 0);
-    assert.deepStrictEqual(newContext, context);
-    assert.strictEqual(newContext.responseHeaders.get('x-error'), 'the-middleware-error');
+    assert.strictEqual(context.responseHeaders.get('x-error'), 'the-middleware-error');
   });
 });

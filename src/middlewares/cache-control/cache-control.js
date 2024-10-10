@@ -26,6 +26,5 @@ export function cacheControl(options) {
     if (header !== '') {
       context.responseHeaders.set('cache-control', header);
     }
-    return context;
   };
 }

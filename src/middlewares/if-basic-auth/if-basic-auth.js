@@ -21,6 +21,5 @@ export function ifBasicAuth(expectedUser, expectedPassword, middleware) {
     context.responseStatus = 401;
     context.responseHeaders.set('www-authenticate', 'Basic realm=foo, charset="UTF-8"');
     context.responseBody = '';
-    return context;
   };
 }

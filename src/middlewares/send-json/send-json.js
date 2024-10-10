@@ -13,6 +13,5 @@ export function sendJson(status, data) {
     context.responseBody = JSON.stringify(data);
     context.responseSize = context.responseBody.length;
     context.responseHeaders.set('content-type', 'application/json');
-    return context;
   };
 }

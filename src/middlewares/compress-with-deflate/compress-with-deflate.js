@@ -17,7 +17,7 @@ const CONTENT_ENCODING = 'deflate';
 export function compressWithDeflate(options) {
   return async (context) => {
     if (!isCompressible(context) || !acceptsEncodings(context, CONTENT_ENCODING)) {
-      return context;
+      return;
     }
 
     context.responseHeaders.set('content-encoding', CONTENT_ENCODING);
@@ -37,7 +37,5 @@ export function compressWithDeflate(options) {
       context.responseEtag.value += '.' + CONTENT_ENCODING;
       context.responseEtag.weak = true;
     }
-
-    return context;
   };
 }

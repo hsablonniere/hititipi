@@ -24,7 +24,7 @@ export function sendFile(filepath) {
   return async (context) => {
     const stats = getStats(absoluteFilepath);
     if (stats == null || !stats.isFile()) {
-      return context;
+      return;
     }
 
     context.responseStatus = 200;
@@ -39,7 +39,7 @@ export function sendFile(filepath) {
         context.responseSize = compressedStats.size;
         context.responseModificationDate = compressedStats.mtime;
         context.responseEtag = getWeakEtag(compressedStats.mtime, compressedStats.size);
-        return context;
+        return;
       }
     }
 
@@ -47,7 +47,5 @@ export function sendFile(filepath) {
     context.responseSize = stats.size;
     context.responseModificationDate = stats.mtime;
     context.responseEtag = getWeakEtag(stats.mtime, stats.size);
-
-    return context;
   };
 }

@@ -12,6 +12,5 @@ export function redirectHttps() {
     if (context.requestUrl.protocol === 'http:') {
       return redirect(301, { protocol: 'https:' })(context);
     }
-    return context;
   };
 }

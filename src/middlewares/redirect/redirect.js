@@ -12,7 +12,6 @@ export function redirect(code, urlParts) {
   return async (context) => {
     context.responseStatus = code;
     context.responseHeaders.set('location', cloneUrl(context.requestUrl, urlParts).toString());
-    return context;
   };
 }
 

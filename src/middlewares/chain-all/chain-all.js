@@ -5,29 +5,25 @@
 
 /**
  * @param {Array<HititipiMiddleware|false>} middlewares
- * @param {(context: HititipiContext, error: any) => Promise<HititipiContext>} [onError]
+ * @param {(context: HititipiContext, error: any) => Promise<void>} [onError]
  * @return {HititipiMiddleware}
  */
 export function chainAll(middlewares, onError) {
   return async (context) => {
-    let contextTmp = context;
-
     const chain = middlewares.filter((item) => item !== false);
 
     let applyMiddleware = chain.shift();
 
     try {
       while (applyMiddleware != null) {
-        contextTmp = await applyMiddleware(contextTmp);
+        await applyMiddleware(context);
         applyMiddleware = chain.shift();
       }
     } catch (error) {
       if (onError == null) {
         throw error;
       }
-      contextTmp = await onError(contextTmp, error);
+      await onError(context, error);
     }
-
-    return contextTmp;
   };
 }

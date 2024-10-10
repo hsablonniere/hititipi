@@ -36,7 +36,5 @@ export function cors(options) {
         context.responseHeaders.set('access-control-expose-headers', exposeHeaders);
       }
     }
-
-    return context;
   };
 }

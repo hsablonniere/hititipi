@@ -11,6 +11,5 @@ export function contentLength() {
       const contentLength = String(context.responseSize);
       context.responseHeaders.set('content-length', contentLength);
     }
-    return context;
   };
 }

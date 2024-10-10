@@ -29,7 +29,7 @@ export interface HititipiContext {
 
 export type HititipiContextWithResponse = WithRequired<HititipiContext, 'responseBody'>;
 
-export type HititipiMiddleware = (context: HititipiContext) => Promise<HititipiContext>;
+export type HititipiMiddleware = (context: HititipiContext) => Promise<void>;
 
 export type Etag = WeakEtag | StrongEtag;
 

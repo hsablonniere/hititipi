@@ -15,6 +15,5 @@ export function setCookie(name, value, options = {}) {
   return async (context) => {
     const setCookieHeader = getSetCookieHeader(name, value, options);
     context.responseHeaders.append('set-cookie', setCookieHeader);
-    return context;
   };
 }

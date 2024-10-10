@@ -10,6 +10,7 @@ import {
 
 /**
  * @typedef {import('./types/hititipi.types.d.ts').HititipiMiddleware} HititipiMiddleware
+ * @typedef {import('./types/hititipi.types.d.ts').HititipiContext} HititipiContext
  * @typedef {import('node:http').IncomingHttpHeaders} NodeRequestHeaders
  * @typedef {import('node:http').IncomingMessage} NodeRequest
  * @typedef {import('node:http').OutgoingHttpHeaders} NodeResponseHeaders
@@ -24,7 +25,9 @@ import {
 export function hititipi(applyMiddleware) {
   return async (nodeRequest, nodeResponse) => {
     const requestHeaders = toStandardHeaders(nodeRequest.headers);
-    const initContext = {
+
+    /** @type {HititipiContext} */
+    const context = {
       requestTimestamp: Date.now(),
       requestId: getRandomId(),
       requestIps: getRequestIps(nodeRequest.socket.remoteAddress, requestHeaders),
@@ -35,7 +38,7 @@ export function hititipi(applyMiddleware) {
     };
 
     try {
-      const context = await applyMiddleware(initContext);
+      await applyMiddleware(context);
       const statusCode = context.responseStatus ?? 501;
       const responseHeaders = toObjectHeaders(context.responseHeaders);
       nodeResponse.writeHead(statusCode, responseHeaders);

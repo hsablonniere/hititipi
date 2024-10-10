@@ -24,6 +24,5 @@ export function referrerPolicy(options) {
     if (header != null) {
       context.responseHeaders.set('referrer-policy', header);
     }
-    return context;
   };
 }

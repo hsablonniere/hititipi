@@ -7,15 +7,15 @@ describe('middleware / redirect-https', () => {
   it('redirect if http', async () => {
     const context = initTestContext();
     context.requestUrl = new URL('http://example.com/foo?bar=42');
-    const newContext = await redirectHttps()(context);
-    assert.equal(newContext.responseStatus, 301);
-    assert.equal(newContext.responseHeaders.get('location'), 'https://example.com/foo?bar=42');
+    await redirectHttps()(context);
+    assert.equal(context.responseStatus, 301);
+    assert.equal(context.responseHeaders.get('location'), 'https://example.com/foo?bar=42');
   });
   it('no redirect if https', async () => {
     const context = initTestContext();
     context.requestUrl = new URL('https://example.com/foo?bar=42');
-    const newContext = await redirectHttps()(context);
-    assert.equal(newContext.responseStatus, null);
-    assert.equal(newContext.responseHeaders.get('location'), null);
+    await redirectHttps()(context);
+    assert.equal(context.responseStatus, null);
+    assert.equal(context.responseHeaders.get('location'), null);
   });
 });

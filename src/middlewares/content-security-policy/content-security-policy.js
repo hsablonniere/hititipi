@@ -20,7 +20,6 @@ export function contentSecurityPolicy(options) {
     if (reportOnlyheader !== '') {
       context.responseHeaders.set('content-security-policy-report-only', reportOnlyheader);
     }
-    return context;
   };
 }
 

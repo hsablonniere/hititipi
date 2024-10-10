@@ -14,6 +14,5 @@ export function frameOptions(options) {
     } else if (options.mode === 'SAMEORIGIN') {
       context.responseHeaders.set('x-frame-options', 'SAMEORIGIN');
     }
-    return context;
   };
 }

@@ -14,6 +14,5 @@ export function xssProtection(options) {
     } else if (options.mode === 'block') {
       context.responseHeaders.set('x-xss-protection', '1;mode=block');
     }
-    return context;
   };
 }

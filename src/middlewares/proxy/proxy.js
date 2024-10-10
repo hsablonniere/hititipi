@@ -34,7 +34,5 @@ export function proxy(urlParts) {
     if (response.body != null) {
       context.responseBody = readableToWebReadableStream(response.body);
     }
-
-    return context;
   };
 }

@@ -24,6 +24,5 @@ export function httpStrictTransportSecurity(options) {
     if (header !== '') {
       context.responseHeaders.set('strict-transport-security', header);
     }
-    return context;
   };
 }

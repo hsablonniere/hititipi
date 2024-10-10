@@ -6,7 +6,7 @@ import { serverName } from './server-name.js';
 describe('middleware / server-name', () => {
   it('should add a server response header', async () => {
     const context = initTestContext();
-    const newContext = await serverName('the-awesome-server')(context);
-    assert.strictEqual(newContext.responseHeaders.get('server'), 'the-awesome-server');
+    await serverName('the-awesome-server')(context);
+    assert.strictEqual(context.responseHeaders.get('server'), 'the-awesome-server');
   });
 });

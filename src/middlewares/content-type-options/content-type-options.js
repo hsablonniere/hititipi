@@ -12,6 +12,5 @@ export function contentTypeOptions(options) {
     if (options.noSniff) {
       context.responseHeaders.set('x-content-type-options', 'nosniff');
     }
-    return context;
   };
 }

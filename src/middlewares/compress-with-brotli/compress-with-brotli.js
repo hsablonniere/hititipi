@@ -17,7 +17,7 @@ const CONTENT_ENCODING = 'br';
 export function compressWithBrotli(options) {
   return async (context) => {
     if (!isCompressible(context) || !acceptsEncodings(context, CONTENT_ENCODING)) {
-      return context;
+      return;
     }
 
     context.responseHeaders.set('content-encoding', CONTENT_ENCODING);
@@ -41,7 +41,5 @@ export function compressWithBrotli(options) {
       context.responseEtag.value += '.' + CONTENT_ENCODING;
       context.responseEtag.weak = true;
     }
-
-    return context;
   };
 }

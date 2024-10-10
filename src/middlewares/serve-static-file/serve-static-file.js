@@ -15,7 +15,7 @@ export function serveStaticFile(options) {
 
   return async (context) => {
     if (context.requestMethod !== 'HEAD' && context.requestMethod !== 'GET') {
-      return context;
+      return;
     }
     const rebasedPathname =
       options.basePath != null && context.requestUrl.pathname.startsWith(options.basePath)

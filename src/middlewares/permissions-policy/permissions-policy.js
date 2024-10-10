@@ -26,7 +26,6 @@ export function permissionsPolicy(options) {
     if (header !== '') {
       context.responseHeaders.set('permissions-policy', header);
     }
-    return context;
   };
 }
 

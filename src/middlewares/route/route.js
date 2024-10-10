@@ -22,7 +22,6 @@ export function route(method, path, withParams) {
         return withParams(pathMatches.params)(context);
       }
     }
-    return context;
   };
 }
 

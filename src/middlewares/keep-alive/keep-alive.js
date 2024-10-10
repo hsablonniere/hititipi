@@ -21,7 +21,5 @@ export function keepAlive(options) {
     } else {
       context.responseHeaders.set('connection', 'close');
     }
-
-    return context;
   };
 }

@@ -11,7 +11,6 @@ import { chainAll } from './chain-all.js';
 const appendToResponseBody = (text) => {
   return async (context) => {
     context.responseBody = context.responseBody != null ? context.responseBody + '-' + text : text;
-    return context;
   };
 };
 
@@ -21,7 +20,7 @@ const errorMiddleware = async () => {
 };
 
 /** @type {HititipiMiddleware} */
-const noop = async (context) => context;
+const noop = async () => {};
 
 describe('middleware / chain-all', () => {
   it('pass context from middleware to middleware', async () => {
@@ -31,8 +30,8 @@ describe('middleware / chain-all', () => {
       appendToResponseBody('three'),
     ]);
     const context = initTestContext();
-    const newContext = await applyMiddleware(context);
-    assert.deepStrictEqual(newContext, {
+    await applyMiddleware(context);
+    assert.deepStrictEqual(context, {
       ...context,
       responseBody: 'one-two-three',
     });
@@ -47,8 +46,8 @@ describe('middleware / chain-all', () => {
       appendToResponseBody('three'),
     ]);
     const context = initTestContext();
-    const newContext = await applyMiddleware(context);
-    assert.deepStrictEqual(newContext, {
+    await applyMiddleware(context);
+    assert.deepStrictEqual(context, {
       ...context,
       responseBody: 'one-three',
     });
@@ -93,12 +92,11 @@ describe('middleware / chain-all', () => {
     const middlewares = [errorMiddleware, postErrorMiddleware];
     const applyMiddleware = chainAll(middlewares, async (context, error) => {
       context.responseBody = error.message;
-      return context;
     });
     const context = initTestContext();
-    const newContext = await applyMiddleware(context);
+    await applyMiddleware(context);
     assert.strictEqual(postErrorMiddleware.mock.callCount(), 0);
-    assert.deepStrictEqual(newContext, {
+    assert.deepStrictEqual(context, {
       ...context,
       responseBody: 'the-middleware-error',
     });

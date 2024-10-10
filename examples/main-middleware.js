@@ -39,7 +39,6 @@ import { xssProtection } from '../src/middlewares/xss-protection/xss-protection.
 
 /**
  * @param {HititipiContext} context
- * @return {Promise<HititipiContext>}
  */
 function dumpInResponseMiddleware(context) {
   return sendJson(200, {
@@ -64,7 +63,6 @@ export const mainMiddleware = chainAll([
   requestId(),
   cacheControl({ 'max-age': 10 }),
   httpStrictTransportSecurity({ 'max-age': ONE_YEAR_S, includeSubDomains: true }),
-
   contentSecurityPolicy({
     directives: {
       'default-src': 'none',
@@ -74,7 +72,6 @@ export const mainMiddleware = chainAll([
       'img-src': ['self', 'images.example.com'],
     },
   }),
-
   permissionsPolicy({
     features: {
       accelerometer: [],
@@ -89,13 +86,13 @@ export const mainMiddleware = chainAll([
   contentTypeOptions({ noSniff: true }),
   chainUntilResponse([
     ifHostname('github.localhost', async (context) => {
-      return proxy({ origin: 'https://github.com' })(context);
+      await proxy({ origin: 'https://github.com' })(context);
     }),
     ifHostname('foo.localhost', async (context) => {
-      return sendJson(200, { msg: `Hello from ${context.requestUrl.hostname}` })(context);
+      await sendJson(200, { msg: `Hello from ${context.requestUrl.hostname}` })(context);
     }),
     ifHostname('bar.localhost', async (context) => {
-      return sendJson(200, { msg: `Hello from ${context.requestUrl.hostname}` })(context);
+      await sendJson(200, { msg: `Hello from ${context.requestUrl.hostname}` })(context);
     }),
     route('GET', '/test', () => sendFile('./public/test/index.html')),
     route('GET', '/secret', () => {
@@ -104,12 +101,10 @@ export const mainMiddleware = chainAll([
     route('GET', '/products/:id', ({ id }) => async (context) => {
       context.responseStatus = 204;
       context.responseHeaders.set('x-id', /** @type {string} */ (id));
-      return context;
     }),
     route('GET', '/books/:title', ({ title }) => async (context) => {
       context.responseStatus = 204;
       context.responseHeaders.set('x-title', /** @type {string} */ (title));
-      return context;
     }),
     route('GET', '/go-home', () => redirect(302, { pathname: '/', search: '', hash: '' })),
     route('GET', '/not-found', () => notFoundMiddleware),

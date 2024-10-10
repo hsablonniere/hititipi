@@ -14,6 +14,5 @@ export function redirectWww(options) {
     if (options.hostnames.includes(context.requestUrl.hostname)) {
       return redirect(301, { hostname: `www.${context.requestUrl.hostname}` })(context);
     }
-    return context;
   };
 }

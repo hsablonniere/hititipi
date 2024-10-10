@@ -19,6 +19,5 @@ export function logRequest(options) {
       `${Date.now() - context.requestTimestamp}ms`,
     ].filter((a) => a != null);
     options.logFunction(...params);
-    return context;
   };
 }

@@ -26,6 +26,5 @@ export function ifHostname(pattern, middleware) {
     if (context.requestUrl.hostname.match(hostnameRegex)) {
       return middleware(context);
     }
-    return context;
   };
 }
