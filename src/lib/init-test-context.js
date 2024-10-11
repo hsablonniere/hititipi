@@ -17,5 +17,6 @@ export function initTestContext(base = {}) {
     requestUrl: new URL(base.requestUrl ?? 'http://localhost:8080/foo?bar=42'),
     requestHeaders: new Headers(),
     responseHeaders: new Headers(),
+    async writeEarlyHints() {},
   };
 }

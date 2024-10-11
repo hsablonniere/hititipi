@@ -36,6 +36,11 @@ export function hititipi(applyMiddleware) {
       requestUrl: getRequestUrl(nodeRequest.url ?? '/', requestHeaders),
       requestHeaders,
       responseHeaders: new Headers(),
+      writeEarlyHints(hints) {
+        return new Promise((resolve) => {
+          nodeResponse.writeEarlyHints(hints, resolve);
+        });
+      },
     };
 
     try {

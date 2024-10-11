@@ -106,6 +106,11 @@ export const mainMiddleware = chainAll([
     }),
     route('GET', '/go-home', () => redirect(302, { pathname: '/', search: '', hash: '' })),
     route('GET', '/not-found', () => notFoundMiddleware),
+    route('GET', '/public/index.html', () => async (context) => {
+      context.writeEarlyHints({
+        link: ['</public/styles.css>; rel=preload'],
+      });
+    }),
     serveStaticFile({ root: '.' }),
     serveDirectoryIndex({ root: '.' }),
     async (context) => {

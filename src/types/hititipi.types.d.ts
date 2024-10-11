@@ -26,6 +26,7 @@ export interface HititipiContext {
   responseSize?: number;
   responseModificationDate?: Date;
   responseEtag?: Etag;
+  readonly writeEarlyHints: (hints: Record<string, string | string[]>) => Promise<void>;
 }
 
 export type HititipiContextWithResponse = WithRequired<HititipiContext, 'responseBody'>;
