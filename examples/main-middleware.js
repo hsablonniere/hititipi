@@ -14,7 +14,7 @@ import { cors } from '../src/middlewares/cors/cors.js';
 import { frameOptions } from '../src/middlewares/frame-options/frame-options.js';
 import { httpStrictTransportSecurity } from '../src/middlewares/http-strict-transport-security/http-strict-transport-security.js';
 import { ifBasicAuth } from '../src/middlewares/if-basic-auth/if-basic-auth.js';
-import { HTML, ifContentType } from '../src/middlewares/if-content-type/if-content-type.js';
+import { HTML, ifContentType, JAVASCRIPT } from '../src/middlewares/if-content-type/if-content-type.js';
 import { ifHostname } from '../src/middlewares/if-hostname/if-hostname.js';
 import { keepAlive } from '../src/middlewares/keep-alive/keep-alive.js';
 import { linkPreload } from '../src/middlewares/link-preload/link-preload.js';
@@ -32,6 +32,7 @@ import { sendJson } from '../src/middlewares/send-json/send-json.js';
 import { serveDirectoryIndex } from '../src/middlewares/serve-directory-index/serve-directory-index.js';
 import { serveStaticFile } from '../src/middlewares/serve-static-file/serve-static-file.js';
 import { setCookie } from '../src/middlewares/set-cookie/set-cookie.js';
+import { transformString } from '../src/middlewares/transform-string/transform-string.js';
 import { xssProtection } from '../src/middlewares/xss-protection/xss-protection.js';
 
 /**
@@ -134,6 +135,13 @@ export const mainMiddleware = chainAll([
     },
   ]),
   ifContentType(HTML, cacheControl({ 'max-age': 60 })),
+  ifContentType(
+    JAVASCRIPT,
+    transformString(async (responseBody) => {
+      // This is a bit slow at scale, but it's just an example
+      return '// THIS IS MY HEADER FOR JAVASCRIPT FILES\n\n' + responseBody;
+    }),
+  ),
   keepAlive({ enabled: true, timeout: 30, maxRequests: 100 }),
   compressWithBrotli({ level: 5 }),
   compressWithZstd({ level: 5 }),
