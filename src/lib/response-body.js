@@ -40,3 +40,20 @@ export function toReadableStream(responseBody) {
     },
   });
 }
+
+/**
+ * @param {string | ArrayBuffer | ReadableStream} responseBody
+ * @return {Promise<string>}
+ */
+export async function toString(responseBody) {
+  if (responseBody instanceof ArrayBuffer) {
+    const decoder = new TextDecoder();
+    return decoder.decode(responseBody);
+  }
+
+  if (responseBody instanceof ReadableStream) {
+    return new Response(responseBody).text();
+  }
+
+  return responseBody;
+}
