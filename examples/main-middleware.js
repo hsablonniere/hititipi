@@ -14,6 +14,7 @@ import { cors } from '../src/middlewares/cors/cors.js';
 import { frameOptions } from '../src/middlewares/frame-options/frame-options.js';
 import { httpStrictTransportSecurity } from '../src/middlewares/http-strict-transport-security/http-strict-transport-security.js';
 import { ifBasicAuth } from '../src/middlewares/if-basic-auth/if-basic-auth.js';
+import { HTML, ifContentType } from '../src/middlewares/if-content-type/if-content-type.js';
 import { ifHostname } from '../src/middlewares/if-hostname/if-hostname.js';
 import { keepAlive } from '../src/middlewares/keep-alive/keep-alive.js';
 import { linkPreload } from '../src/middlewares/link-preload/link-preload.js';
@@ -132,6 +133,7 @@ export const mainMiddleware = chainAll([
       return notFoundMiddleware(context);
     },
   ]),
+  ifContentType(HTML, cacheControl({ 'max-age': 60 })),
   keepAlive({ enabled: true, timeout: 30, maxRequests: 100 }),
   compressWithBrotli({ level: 5 }),
   compressWithZstd({ level: 5 }),
