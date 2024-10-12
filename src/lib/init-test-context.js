@@ -1,4 +1,5 @@
 import { mock } from 'node:test';
+import { toReadableStream } from './response-body.js';
 
 /**
  * @typedef {import('node:test').Mock<(hints: Record<string, string | string[]>) => Promise<void>>} MockWriteEarlyHints
@@ -19,6 +20,7 @@ export function initTestContext(base = {}) {
     requestMethod: base.requestMethod ?? 'GET',
     requestUrl: new URL(base.requestUrl ?? 'http://localhost:8080/foo?bar=42'),
     requestHeaders: new Headers(),
+    requestBody: toReadableStream(''),
     responseHeaders: new Headers(),
     writeEarlyHints: mock.fn(async () => {}),
   };

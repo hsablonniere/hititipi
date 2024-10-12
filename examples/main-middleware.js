@@ -1,5 +1,6 @@
 import { toObjectHeaders } from '../src/hititipi.common.js';
 import { ONE_DAY_S, ONE_YEAR_S } from '../src/lib/durations.js';
+import { toString as readableToString } from '../src/lib/response-body.js';
 import { cacheControl } from '../src/middlewares/cache-control/cache-control.js';
 import { chainAll } from '../src/middlewares/chain-all/chain-all.js';
 import { chainUntilResponse } from '../src/middlewares/chain-until-response/chain-until-response.js';
@@ -125,6 +126,11 @@ export const mainMiddleware = chainAll([
     }),
     route('GET', '/go-home', () => redirect(302, { pathname: '/', search: '', hash: '' })),
     route('GET', '/not-found', () => notFoundMiddleware),
+    route('POST', '/to-uppercase', () => async (context) => {
+      const requestBody = await readableToString(context.requestBody);
+      context.responseStatus = 200;
+      context.responseBody = requestBody.toUpperCase();
+    }),
     serveStaticFile({ root: '.' }),
     serveDirectoryIndex({ root: '.' }),
     async (context) => {
