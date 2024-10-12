@@ -20,6 +20,7 @@ export interface HititipiContext {
   readonly requestMethod: HititipiMethod;
   readonly requestUrl: URL;
   readonly requestHeaders: Headers;
+  readonly requestBody: ReadableStream;
   responseStatus?: number;
   readonly responseHeaders: Headers;
   responseBody?: string | ArrayBuffer | ReadableStream;

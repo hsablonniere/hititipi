@@ -7,6 +7,7 @@ import {
   toObjectHeaders,
   toStandardHeaders,
 } from './hititipi.common.js';
+import { readableToWebReadableStream } from './lib/node-streams.js';
 
 /**
  * @typedef {import('./types/hititipi.types.d.ts').HititipiMiddleware} HititipiMiddleware
@@ -35,6 +36,7 @@ export function hititipi(applyMiddleware) {
       requestMethod: nodeRequest.method ?? 'GET',
       requestUrl: getRequestUrl(nodeRequest.url ?? '/', requestHeaders),
       requestHeaders,
+      requestBody: readableToWebReadableStream(nodeRequest),
       responseHeaders: new Headers(),
       writeEarlyHints(hints) {
         return new Promise((resolve) => {
