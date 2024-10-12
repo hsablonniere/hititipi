@@ -16,6 +16,7 @@ import { httpStrictTransportSecurity } from '../src/middlewares/http-strict-tran
 import { ifBasicAuth } from '../src/middlewares/if-basic-auth/if-basic-auth.js';
 import { ifHostname } from '../src/middlewares/if-hostname/if-hostname.js';
 import { keepAlive } from '../src/middlewares/keep-alive/keep-alive.js';
+import { linkPreload } from '../src/middlewares/link-preload/link-preload.js';
 import { logRequest } from '../src/middlewares/log-request/log-request.js';
 import { notFound } from '../src/middlewares/not-found/not-found.js';
 import { notModified } from '../src/middlewares/not-modified/not-modified.js';
@@ -52,6 +53,22 @@ function dumpInResponseMiddleware(context) {
 const notFoundMiddleware = notFound();
 
 export const mainMiddleware = chainAll([
+  linkPreload({
+    earlyHints: 'http2-only',
+    manifest: {
+      manifestVersion: 1,
+      resources: {
+        '/public/index.html': [
+          { href: '/public/styles.css', as: 'style' },
+          { href: '/public/jquery.js', as: 'script' },
+          { href: '/public/image.gif?q=1', as: 'image' },
+          { href: '/public/image.jpg?q=1', as: 'image' },
+          { href: '/public/image.png?q=1', as: 'image' },
+          { href: '/public/image.svg?q=1', as: 'image' },
+        ],
+      },
+    },
+  }),
   cors({
     allowOrigin: '*',
     maxAge: ONE_DAY_S,
@@ -69,7 +86,7 @@ export const mainMiddleware = chainAll([
       'script-src': ['self', 'unsafe-inline'],
       'style-src': ['self', 'unsafe-inline'],
       'media-src': ['self'],
-      'img-src': ['self', 'images.example.com'],
+      'img-src': ['self', 'images.example.com', 'data:'],
     },
   }),
   permissionsPolicy({
@@ -106,11 +123,6 @@ export const mainMiddleware = chainAll([
     }),
     route('GET', '/go-home', () => redirect(302, { pathname: '/', search: '', hash: '' })),
     route('GET', '/not-found', () => notFoundMiddleware),
-    route('GET', '/public/index.html', () => async (context) => {
-      context.writeEarlyHints({
-        link: ['</public/styles.css>; rel=preload'],
-      });
-    }),
     serveStaticFile({ root: '.' }),
     serveDirectoryIndex({ root: '.' }),
     async (context) => {
