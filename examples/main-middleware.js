@@ -69,7 +69,7 @@ export const mainMiddleware = chainAll([
       'script-src': ['self', 'unsafe-inline'],
       'style-src': ['self', 'unsafe-inline'],
       'media-src': ['self'],
-      'img-src': ['self', 'images.example.com'],
+      'img-src': ['self', 'images.example.com', 'data:'],
     },
   }),
   permissionsPolicy({
