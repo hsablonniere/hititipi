@@ -38,6 +38,7 @@ export function compressWithBrotli(options) {
       ),
     );
 
+    context.responseHeaders.delete('accept-ranges');
     updateResponseBody(context, responseBody);
 
     if (context.responseEtag != null) {

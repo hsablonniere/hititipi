@@ -32,6 +32,7 @@ export function compressWithGzip(options) {
       ),
     );
 
+    context.responseHeaders.delete('accept-ranges');
     updateResponseBody(context, responseBody);
 
     if (context.responseEtag != null) {
