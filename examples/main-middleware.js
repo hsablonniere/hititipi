@@ -117,11 +117,11 @@ export const mainMiddleware = chainAll([
     }),
     route('GET', '/products/:id', ({ id }) => async (context) => {
       context.responseStatus = 204;
-      context.responseHeaders.set('x-id', /** @type {string} */ (id));
+      context.responseHeaders.set('x-id', id);
     }),
     route('GET', '/books/:title', ({ title }) => async (context) => {
       context.responseStatus = 204;
-      context.responseHeaders.set('x-title', /** @type {string} */ (title));
+      context.responseHeaders.set('x-title', title);
     }),
     route('GET', '/go-home', () => redirect(302, { pathname: '/', search: '', hash: '' })),
     route('GET', '/not-found', () => notFoundMiddleware),
