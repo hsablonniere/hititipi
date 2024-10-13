@@ -4,6 +4,7 @@ import { getContentType } from '../../lib/content-type.js';
 import { getWeakEtag } from '../../lib/etag.js';
 import { getStats, resolveAbsolutePath } from '../../lib/node-fs.js';
 import { readableToWebReadableStream } from '../../lib/node-streams.js';
+import { updateResponseBody } from '../../lib/response.js';
 
 /**
  * @typedef {import('../../types/hititipi.types.d.ts').HititipiMiddleware} HititipiMiddleware
@@ -35,16 +36,16 @@ export function sendFile(filepath) {
       if (acceptsEncodings(context, encoding) && compressedStats?.isFile()) {
         context.responseHeaders.set('content-encoding', encoding);
         context.responseHeaders.set('vary', 'accept-encoding');
-        context.responseBody = readableToWebReadableStream(createReadStream(absoluteFilepath + extension));
-        context.responseSize = compressedStats.size;
+        const responseBody = readableToWebReadableStream(createReadStream(absoluteFilepath + extension));
+        updateResponseBody(context, responseBody, compressedStats.size);
         context.responseModificationDate = compressedStats.mtime;
         context.responseEtag = getWeakEtag(compressedStats.mtime, compressedStats.size);
         return;
       }
     }
 
-    context.responseBody = readableToWebReadableStream(createReadStream(absoluteFilepath));
-    context.responseSize = stats.size;
+    const responseBody = readableToWebReadableStream(createReadStream(absoluteFilepath));
+    updateResponseBody(context, responseBody, stats.size);
     context.responseModificationDate = stats.mtime;
     context.responseEtag = getWeakEtag(stats.mtime, stats.size);
   };

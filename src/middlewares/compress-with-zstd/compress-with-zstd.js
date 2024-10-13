@@ -1,6 +1,7 @@
 import { compress as compressZstd, init as initZstd } from '@bokuweb/zstd-wasm';
 import { acceptsEncodings, isCompressible } from '../../lib/compression.js';
 import { readableStreamToArrayBuffer, toArrayBuffer } from '../../lib/response-body.js';
+import { updateResponseBody } from '../../lib/response.js';
 
 /**
  * @typedef {import('../../types/hititipi.types.d.ts').HititipiMiddleware} HititipiMiddleware
@@ -31,10 +32,9 @@ export function compressWithZstd(options) {
         : toArrayBuffer(context.responseBody);
 
     // TODO not sure why we need to go through a buffer
-    const compressedData = compressZstdArrayBuffer(rawData, options.level);
-    context.responseBody = compressedData;
+    const responseBody = compressZstdArrayBuffer(rawData, options.level);
 
-    delete context.responseSize;
+    updateResponseBody(context, responseBody);
 
     if (context.responseEtag != null) {
       context.responseEtag.value += '.' + CONTENT_ENCODING;
