@@ -44,9 +44,37 @@ export function sendFile(filepath) {
       }
     }
 
-    const responseBody = readableToWebReadableStream(createReadStream(absoluteFilepath));
-    updateResponseBody(context, responseBody, stats.size);
-    context.responseModificationDate = stats.mtime;
+    const rangeHeader = context.requestHeaders.get('range');
+
+    // Full response
+    if (rangeHeader == null) {
+      context.responseHeaders.set('accept-ranges', 'bytes');
+      const responseBody = readableToWebReadableStream(createReadStream(absoluteFilepath));
+      updateResponseBody(context, responseBody, stats.size);
+    }
+    // Partial response
+    else {
+      const { start, end, chunkSize } = parseRange(rangeHeader, stats.size);
+      context.responseStatus = 206;
+      context.responseHeaders.set('content-range', `bytes ${start}-${end}/${stats.size}`);
+      const responseBody = readableToWebReadableStream(createReadStream(absoluteFilepath, { start, end }));
+      updateResponseBody(context, responseBody, chunkSize);
+    }
+
     context.responseEtag = getWeakEtag(stats.mtime, stats.size);
+    context.responseModificationDate = stats.mtime;
   };
+}
+
+/**
+ * @param {string} rangeHeader
+ * @param {number} size
+ * @return {{start: number, end: number, chunkSize: number}}
+ */
+function parseRange(rangeHeader, size) {
+  const [startString, endString] = rangeHeader.replace(/bytes=/, '').split('-', 2);
+  const start = Number(startString);
+  const end = endString !== '' ? Math.min(Number(endString), size - 1) : size - 1;
+  const chunkSize = end - start + 1;
+  return { start, end, chunkSize };
 }

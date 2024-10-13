@@ -34,6 +34,7 @@ export function compressWithZstd(options) {
     // TODO not sure why we need to go through a buffer
     const responseBody = compressZstdArrayBuffer(rawData, options.level);
 
+    context.responseHeaders.delete('accept-ranges');
     updateResponseBody(context, responseBody);
 
     if (context.responseEtag != null) {
