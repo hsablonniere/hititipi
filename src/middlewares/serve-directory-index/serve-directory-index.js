@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import { getStrongEtagHash } from '../../lib/etag.js';
 import { getStats, joinPaths, resolveAbsolutePath } from '../../lib/node-fs.js';
+import { updateResponseBody } from '../../lib/response.js';
 import stylesheet from './serve-directory-index.css.js';
 
 /**
@@ -34,13 +35,12 @@ export function serveDirectoryIndex(options) {
     }
 
     const dirEntries = await getDirectoryEntries(absolutePathname, showHidden);
-    const content = renderPage(pathname, dirEntries);
+    const responseBody = renderPage(pathname, dirEntries);
 
     context.responseStatus = 200;
     context.responseHeaders.set('content-type', 'text/html');
-    context.responseBody = content;
-    context.responseSize = Buffer.from(content).length;
-    context.responseEtag = await getStrongEtagHash(content);
+    updateResponseBody(context, responseBody);
+    context.responseEtag = await getStrongEtagHash(responseBody);
   };
 }
 

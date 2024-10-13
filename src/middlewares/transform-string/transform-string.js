@@ -1,5 +1,6 @@
 import { getStrongEtagHash } from '../../lib/etag.js';
 import { toString } from '../../lib/response-body.js';
+import { updateResponseBody } from '../../lib/response.js';
 
 /**
  * @typedef {import('../../types/hititipi.types.d.ts').HititipiMiddleware} HititipiMiddleware
@@ -13,8 +14,8 @@ export function transformString(transformResponseBody) {
   return async (context) => {
     if (context.responseBody != null) {
       const responseBodyText = await toString(context.responseBody);
-      context.responseBody = await transformResponseBody(responseBodyText);
-      context.responseSize = Buffer.from(responseBodyText).length;
+      const responseBody = await transformResponseBody(responseBodyText);
+      updateResponseBody(context, responseBody);
       context.responseEtag = await getStrongEtagHash(responseBodyText);
     }
   };

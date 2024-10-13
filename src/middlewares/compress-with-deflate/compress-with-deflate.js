@@ -2,6 +2,7 @@ import zlib from 'node:zlib';
 import { acceptsEncodings, isCompressible } from '../../lib/compression.js';
 import { duplexToWebTransformStream } from '../../lib/node-streams.js';
 import { toReadableStream } from '../../lib/response-body.js';
+import { updateResponseBody } from '../../lib/response.js';
 
 /**
  * @typedef {import('../../types/hititipi.types.d.ts').HititipiMiddleware} HititipiMiddleware
@@ -23,7 +24,7 @@ export function compressWithDeflate(options) {
     context.responseHeaders.set('content-encoding', CONTENT_ENCODING);
     context.responseHeaders.set('vary', 'accept-encoding');
 
-    context.responseBody = toReadableStream(context.responseBody).pipeThrough(
+    const responseBody = toReadableStream(context.responseBody).pipeThrough(
       duplexToWebTransformStream(
         zlib.createDeflate({
           level: options.level,
@@ -31,7 +32,7 @@ export function compressWithDeflate(options) {
       ),
     );
 
-    delete context.responseSize;
+    updateResponseBody(context, responseBody);
 
     if (context.responseEtag != null) {
       context.responseEtag.value += '.' + CONTENT_ENCODING;
