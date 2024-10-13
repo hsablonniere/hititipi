@@ -8,7 +8,6 @@ import { compressWithBrotli } from '../src/middlewares/compress-with-brotli/comp
 import { compressWithDeflate } from '../src/middlewares/compress-with-deflate/compress-with-deflate.js';
 import { compressWithGzip } from '../src/middlewares/compress-with-gzip/compress-with-gzip.js';
 import { compressWithZstd } from '../src/middlewares/compress-with-zstd/compress-with-zstd.js';
-import { contentLength } from '../src/middlewares/content-length/content-length.js';
 import { contentSecurityPolicy } from '../src/middlewares/content-security-policy/content-security-policy.js';
 import { contentTypeOptions } from '../src/middlewares/content-type-options/content-type-options.js';
 import { cors } from '../src/middlewares/cors/cors.js';
@@ -153,7 +152,6 @@ export const mainMiddleware = chainAll([
   compressWithZstd({ level: 5 }),
   compressWithGzip({ level: 6 }),
   compressWithDeflate({ level: 6 }),
-  contentLength(),
   notModified({ etag: true, lastModified: false }),
   logRequest({
     logFunction: console.log,
