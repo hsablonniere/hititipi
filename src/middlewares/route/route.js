@@ -3,15 +3,28 @@ import { match as createMatchPath } from 'path-to-regexp';
 /**
  * @typedef {import('../../types/hititipi.types.d.ts').HititipiMethod} HititipiMethod
  * @typedef {import('../../types/hititipi.types.d.ts').HititipiMiddleware} HititipiMiddleware
- * @typedef {import('path-to-regexp').Path} Path
- * @typedef {import('path-to-regexp').ParamData} ParamData
  */
 
 /**
- * @param {HititipiMethod|'*'} method
- * @param {Path} path
- * @param {(params: ParamData) => HititipiMiddleware} withParams
- * @return {HititipiMiddleware}
+ * @template T
+ * @typedef {T extends `${string}/:${infer Param}/${infer Rest}`
+ *   ? Param | PathParams<Rest>
+ *   : T extends `${string}/:${infer Param}`
+ *     ? Param
+ *     : never} PathParams
+ */
+
+/**
+ * @template T
+ * @typedef {{ [K in PathParams<T>]: string }} PathParamsObject
+ */
+
+/**
+ * @template {string} T
+ * @param {HititipiMethod} method
+ * @param {T} path
+ * @param {(params: PathParamsObject<T>) => HititipiMiddleware} withParams
+ * @returns {HititipiMiddleware}
  */
 export function route(method, path, withParams) {
   const matchPath = createMatchPath(path, { decode: decodeURIComponent });
@@ -19,6 +32,7 @@ export function route(method, path, withParams) {
     if (matchesMethod(method, context.requestMethod)) {
       const pathMatches = matchPath(context.requestUrl.pathname);
       if (pathMatches !== false) {
+        // @ts-ignore
         return withParams(pathMatches.params)(context);
       }
     }
