@@ -11,7 +11,7 @@ http
       context.responseHeaders.set('foo', context.requestHeaders.get('foo'));
       context.responseHeaders.set('bar', context.requestHeaders.get('bar'));
       return sendJson(200, {
-        requestId: context.requestId,
+        message: 'Hello world!',
         requestMethod: context.requestMethod,
         requestUrl: context.requestUrl,
       })(context);
