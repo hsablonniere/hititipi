@@ -1,6 +1,5 @@
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
-import { getRandomId } from '../../src/hititipi.common.js';
 
 const [PORT_STRING = '8080'] = process.argv.slice(2);
 const PORT = Number(PORT_STRING);
@@ -17,7 +16,7 @@ app.all('/*', (c) => {
     c.res.headers.set('bar', barHeader);
   }
   return c.json({
-    requestId: getRandomId(),
+    message: 'Hello world!',
     requestMethod: c.req.method,
     requestUrl: c.req.url,
   });

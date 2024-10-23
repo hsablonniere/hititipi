@@ -1,5 +1,4 @@
 import http from 'node:http';
-import { getRandomId } from '../src/hititipi.common.js';
 
 const [PORT_STRING = '8080'] = process.argv.slice(2);
 const PORT = Number(PORT_STRING);
@@ -16,16 +15,17 @@ http
       if (barHeader != null) {
         responseHeaders['bar'] = barHeader;
       }
-      const body = JSON.stringify({
-        requestId: getRandomId(),
+      const bodyString = JSON.stringify({
+        message: 'Hello world!',
         requestMethod: nodeRequest.method,
         requestUrl: nodeRequest.url,
       });
+      const bodyBuffer = Buffer.from(bodyString);
       responseHeaders['content-type'] = 'application/json';
-      responseHeaders['content-length'] = Buffer.from(body).length;
+      responseHeaders['content-length'] = bodyBuffer.length;
 
       nodeResponse.writeHead(200, responseHeaders);
-      nodeResponse.write(body);
+      nodeResponse.write(bodyBuffer);
       nodeResponse.end();
     } catch (error) {
       console.error(error);

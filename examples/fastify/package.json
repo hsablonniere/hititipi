@@ -1,0 +1,7 @@
+{
+  "name": "example-fastify",
+  "type": "module",
+  "dependencies": {
+    "fastify": "5.0.0"
+  }
+}
