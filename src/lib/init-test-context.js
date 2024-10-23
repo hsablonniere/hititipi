@@ -1,17 +1,24 @@
 import { mock } from 'node:test';
+import { RequestHeadersNode, ResponseHeadersNode } from '../hititipi.node.js';
 import { toReadableStream } from './response-body.js';
 
 /**
  * @typedef {import('node:test').Mock<(hints: Record<string, string | string[]>) => Promise<void>>} MockWriteEarlyHints
  * @typedef {import('../types/hititipi.types.d.ts').HititipiContext} HititipiContext
  * @typedef {import('../types/hititipi.types.d.ts').HititipiMethod} HititipiMethod
+ * @typedef {import('../types/hititipi.types.d.ts').RequestHeaders} RequestHeaders
  */
 
 /**
- * @param {{requestHttpVersion?: number, requestMethod?: HititipiMethod, requestUrl?: string}} [base]
+ * @param {Object} [base]
+ * @param {number} [base.requestHttpVersion]
+ * @param {HititipiMethod} [base.requestMethod]
+ * @param {string} [base.requestUrl]
+ * @param {Record<string, string|Array<string>>} [base.requestHeaders]
  * @return {HititipiContext & { writeEarlyHints: MockWriteEarlyHints }}
  */
 export function initTestContext(base = {}) {
+  const requestHeaders = base.requestHeaders ?? {};
   return {
     requestTimestamp: Date.now(),
     requestId: 'random-id',
@@ -19,9 +26,9 @@ export function initTestContext(base = {}) {
     requestHttpVersion: base.requestHttpVersion ?? 1,
     requestMethod: base.requestMethod ?? 'GET',
     requestUrl: new URL(base.requestUrl ?? 'http://localhost:8080/foo?bar=42'),
-    requestHeaders: new Headers(),
+    requestHeaders: new RequestHeadersNode(requestHeaders),
     requestBody: toReadableStream(''),
-    responseHeaders: new Headers(),
+    responseHeaders: new ResponseHeadersNode(),
     writeEarlyHints: mock.fn(async () => {}),
   };
 }

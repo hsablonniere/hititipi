@@ -54,8 +54,11 @@ describe('middleware / not-modified', () => {
     });
 
     it('GET with single if-none-match (no match) should return 200 and add etag', async () => {
-      const context = initTestContext();
-      context.requestHeaders.set('if-none-match', 'W/"abcdef"');
+      const context = initTestContext({
+        requestHeaders: {
+          'if-none-match': 'W/"abcdef"',
+        },
+      });
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -70,8 +73,11 @@ describe('middleware / not-modified', () => {
     });
 
     it('GET with multiple if-none-match (no match) should return 200 and add etag', async () => {
-      const context = initTestContext();
-      context.requestHeaders.set('if-none-match', 'W/"abcdef", W/"ghijkl"');
+      const context = initTestContext({
+        requestHeaders: {
+          'if-none-match': 'W/"abcdef", W/"ghijkl"',
+        },
+      });
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -86,8 +92,11 @@ describe('middleware / not-modified', () => {
     });
 
     it('GET with single if-none-match (one match) should return 304, add etag and clean response headers', async () => {
-      const context = initTestContext();
-      context.requestHeaders.set('if-none-match', 'W/"123456"');
+      const context = initTestContext({
+        requestHeaders: {
+          'if-none-match': 'W/"123456"',
+        },
+      });
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -102,8 +111,11 @@ describe('middleware / not-modified', () => {
     });
 
     it('GET with multiple if-none-match (one match) should return 304, add etag and clean response headers', async () => {
-      const context = initTestContext();
-      context.requestHeaders.set('if-none-match', 'W/"abcdef", W/"123456"');
+      const context = initTestContext({
+        requestHeaders: {
+          'if-none-match': 'W/"abcdef", W/"123456"',
+        },
+      });
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -118,8 +130,12 @@ describe('middleware / not-modified', () => {
     });
 
     it('POST with single if-none-match (one match) should return 200 and not add etag', async () => {
-      const context = initTestContext({ requestMethod: 'POST' });
-      context.requestHeaders.set('if-none-match', 'W/"123456"');
+      const context = initTestContext({
+        requestMethod: 'POST',
+        requestHeaders: {
+          'if-none-match': 'W/"123456"',
+        },
+      });
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -165,8 +181,11 @@ describe('middleware / not-modified', () => {
     });
 
     it('GET with if-modified-since before responseModificationDate should return 200 and add last-modified', async () => {
-      const context = initTestContext();
-      context.requestHeaders.set('if-modified-since', 'Sun, 01 Jan 2023 00:00:00 GMT');
+      const context = initTestContext({
+        requestHeaders: {
+          'if-modified-since': 'Sun, 01 Jan 2023 00:00:00 GMT',
+        },
+      });
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -181,8 +200,11 @@ describe('middleware / not-modified', () => {
     });
 
     it('GET with if-modified-since after responseModificationDate should return 304, add last-modified and clean response headers', async () => {
-      const context = initTestContext();
-      context.requestHeaders.set('if-modified-since', 'Wed, 01 Jan 2025 00:00:00 GMT');
+      const context = initTestContext({
+        requestHeaders: {
+          'if-modified-since': 'Wed, 01 Jan 2025 00:00:00 GMT',
+        },
+      });
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -197,8 +219,11 @@ describe('middleware / not-modified', () => {
     });
 
     it('GET with if-modified-since same as responseModificationDate should return 304, add last-modified and clean response headers', async () => {
-      const context = initTestContext();
-      context.requestHeaders.set('if-modified-since', 'Mon, 01 Jan 2024 00:00:00 GMT');
+      const context = initTestContext({
+        requestHeaders: {
+          'if-modified-since': 'Mon, 01 Jan 2024 00:00:00 GMT',
+        },
+      });
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -213,8 +238,11 @@ describe('middleware / not-modified', () => {
     });
 
     it('GET with if-modified-since same (but different millisecond) as responseModificationDate should return 304, add last-modified and clean response headers', async () => {
-      const context = initTestContext();
-      context.requestHeaders.set('if-modified-since', 'Mon, 01 Jan 2024 00:00:00 GMT');
+      const context = initTestContext({
+        requestHeaders: {
+          'if-modified-since': 'Mon, 01 Jan 2024 00:00:00 GMT',
+        },
+      });
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -229,8 +257,12 @@ describe('middleware / not-modified', () => {
     });
 
     it('POST with if-modified-since after responseModificationDate should return 200 and not add last-modified', async () => {
-      const context = initTestContext({ requestMethod: 'POST' });
-      context.requestHeaders.set('if-modified-since', 'Wed, 01 Jan 2025 00:00:00 GMT');
+      const context = initTestContext({
+        requestMethod: 'POST',
+        requestHeaders: {
+          'if-modified-since': 'Wed, 01 Jan 2025 00:00:00 GMT',
+        },
+      });
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -262,9 +294,12 @@ describe('middleware / not-modified', () => {
     });
 
     it('GET with single if-none-match (no match) and if-modified-since before responseModificationDate should return 200 and add etag and last-modified', async () => {
-      const context = initTestContext();
-      context.requestHeaders.set('if-none-match', 'W/"abcdef"');
-      context.requestHeaders.set('if-modified-since', 'Sun, 01 Jan 2023 00:00:00 GMT');
+      const context = initTestContext({
+        requestHeaders: {
+          'if-none-match': 'W/"abcdef"',
+          'if-modified-since': 'Sun, 01 Jan 2023 00:00:00 GMT',
+        },
+      });
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -279,9 +314,12 @@ describe('middleware / not-modified', () => {
     });
 
     it('GET with multiple if-none-match (no match) and if-modified-since before responseModificationDate should return 200 and add etag and last-modified', async () => {
-      const context = initTestContext();
-      context.requestHeaders.set('if-none-match', 'W/"abcdef", W/"ghijkl"');
-      context.requestHeaders.set('if-modified-since', 'Sun, 01 Jan 2023 00:00:00 GMT');
+      const context = initTestContext({
+        requestHeaders: {
+          'if-none-match': 'W/"abcdef", W/"ghijkl"',
+          'if-modified-since': 'Sun, 01 Jan 2023 00:00:00 GMT',
+        },
+      });
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -296,9 +334,12 @@ describe('middleware / not-modified', () => {
     });
 
     it('GET with single if-none-match (one match) and if-modified-since before responseModificationDate should return 304, add etag and clean response headers', async () => {
-      const context = initTestContext();
-      context.requestHeaders.set('if-none-match', 'W/"123456"');
-      context.requestHeaders.set('if-modified-since', 'Sun, 01 Jan 2023 00:00:00 GMT');
+      const context = initTestContext({
+        requestHeaders: {
+          'if-none-match': 'W/"123456"',
+          'if-modified-since': 'Sun, 01 Jan 2023 00:00:00 GMT',
+        },
+      });
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -313,9 +354,12 @@ describe('middleware / not-modified', () => {
     });
 
     it('GET with multiple if-none-match (one match) and if-modified-since before responseModificationDate should return 304, add etag and clean response headers', async () => {
-      const context = initTestContext();
-      context.requestHeaders.set('if-none-match', 'W/"abcdef", W/"123456"');
-      context.requestHeaders.set('if-modified-since', 'Sun, 01 Jan 2023 00:00:00 GMT');
+      const context = initTestContext({
+        requestHeaders: {
+          'if-none-match': 'W/"abcdef", W/"123456"',
+          'if-modified-since': 'Sun, 01 Jan 2023 00:00:00 GMT',
+        },
+      });
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -330,8 +374,11 @@ describe('middleware / not-modified', () => {
     });
 
     it('GET with no etag and if-modified-since after responseModificationDate should return 304 and add last-modified and clean response headers', async () => {
-      const context = initTestContext();
-      context.requestHeaders.set('if-modified-since', 'Wed, 01 Jan 2025 00:00:00 GMT');
+      const context = initTestContext({
+        requestHeaders: {
+          'if-modified-since': 'Wed, 01 Jan 2025 00:00:00 GMT',
+        },
+      });
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -345,9 +392,12 @@ describe('middleware / not-modified', () => {
     });
 
     it('GET with single if-none-match (no match) and if-modified-since after responseModificationDate should return 304, add etag and clean response headers', async () => {
-      const context = initTestContext();
-      context.requestHeaders.set('if-none-match', 'W/"abcdef"');
-      context.requestHeaders.set('if-modified-since', 'Wed, 01 Jan 2025 00:00:00 GMT');
+      const context = initTestContext({
+        requestHeaders: {
+          'if-none-match': 'W/"abcdef"',
+          'if-modified-since': 'Wed, 01 Jan 2025 00:00:00 GMT',
+        },
+      });
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -362,9 +412,12 @@ describe('middleware / not-modified', () => {
     });
 
     it('GET with multiple if-none-match (no match) and if-modified-since after responseModificationDate should return 304, add etag and clean response headers', async () => {
-      const context = initTestContext();
-      context.requestHeaders.set('if-none-match', 'W/"abcdef", W/"ghijkl"');
-      context.requestHeaders.set('if-modified-since', 'Wed, 01 Jan 2025 00:00:00 GMT');
+      const context = initTestContext({
+        requestHeaders: {
+          'if-none-match': 'W/"abcdef", W/"ghijkl"',
+          'if-modified-since': 'Wed, 01 Jan 2025 00:00:00 GMT',
+        },
+      });
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -379,9 +432,13 @@ describe('middleware / not-modified', () => {
     });
 
     it('POST with single if-none-match (one match) and if-modified-since before responseModificationDate should return 200 and not add etag or last-modified', async () => {
-      const context = initTestContext({ requestMethod: 'POST' });
-      context.requestHeaders.set('if-none-match', 'W/"123456"');
-      context.requestHeaders.set('if-modified-since', 'Sun, 01 Jan 2023 00:00:00 GMT');
+      const context = initTestContext({
+        requestMethod: 'POST',
+        requestHeaders: {
+          'if-none-match': 'W/"123456"',
+          'if-modified-since': 'Sun, 01 Jan 2023 00:00:00 GMT',
+        },
+      });
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');
@@ -396,9 +453,13 @@ describe('middleware / not-modified', () => {
     });
 
     it('POST with single if-none-match (no match) and if-modified-since after responseModificationDate should return 200 and not add etag or last-modified', async () => {
-      const context = initTestContext({ requestMethod: 'POST' });
-      context.requestHeaders.set('if-none-match', 'W/"abcdef"');
-      context.requestHeaders.set('if-modified-since', 'Wed, 01 Jan 2025 00:00:00 GMT');
+      const context = initTestContext({
+        requestMethod: 'POST',
+        requestHeaders: {
+          'if-none-match': 'W/"abcdef"',
+          'if-modified-since': 'Wed, 01 Jan 2025 00:00:00 GMT',
+        },
+      });
       context.responseStatus = 200;
       context.responseHeaders.set('server', 'the-server');
       context.responseHeaders.set('x-foo', 'bar');

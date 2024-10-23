@@ -1,5 +1,9 @@
 /**
- * @param {Headers} headers
+ * @typedef {import('../types/hititipi.types.d.ts').RequestHeaders} RequestHeaders
+ */
+
+/**
+ * @param {RequestHeaders} headers
  * @return {string|null}
  */
 export function getBearerToken(headers) {
@@ -12,7 +16,7 @@ export function getBearerToken(headers) {
 }
 
 /**
- * @param {Headers} headers
+ * @param {RequestHeaders} headers
  * @return {{password: string|null, user: string|null}}
  */
 export function getBasicAuth(headers) {

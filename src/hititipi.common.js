@@ -1,6 +1,8 @@
 /**
  * @typedef {import('./types/hititipi.types.d.ts').HeadersAsObject} HeadersAsObject
  * @typedef {import('./types/hititipi.types.d.ts').HititipiContext} HititipiContext
+ * @typedef {import('./types/hititipi.types.d.ts').RequestHeaders} RequestHeaders
+ * @typedef {import('./types/hititipi.types.d.ts').ResponseHeaders} ResponseHeaders
  * @typedef {import('./types/hititipi.types.d.ts').HititipiContextWithResponse} HititipiContextWithResponse
  */
 
@@ -39,7 +41,7 @@ export function getRandomId(size = 10) {
 
 /**
  * @param {string|null|undefined} rawRemoteAddress
- * @param {Headers} headers
+ * @param {RequestHeaders} headers
  * @return {Array<string>}
  */
 export function getRequestIps(rawRemoteAddress, headers) {
@@ -58,7 +60,7 @@ export function getRequestIps(rawRemoteAddress, headers) {
 
 /**
  * @param {string} partialUrl
- * @param {Headers} headers
+ * @param {RequestHeaders} headers
  * @return {URL}
  */
 export function getRequestUrl(partialUrl, headers) {

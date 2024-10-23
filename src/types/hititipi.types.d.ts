@@ -10,6 +10,42 @@ export type HititipiMethod =
   | 'TRACE'
   | string;
 
+// If we could circular references in template literal types, it would be great but not for now
+// https://github.com/microsoft/TypeScript/issues/44792
+export type HeaderName = Lowercase<string>;
+
+export interface RequestHeaders {
+  get(name: HeaderName): string | null;
+
+  getNumber(name: HeaderName): number | null;
+
+  getDate(name: HeaderName): Date | null;
+
+  has(name: HeaderName): boolean;
+
+  getObject(): Record<string, string | Array<string>>;
+}
+
+export interface ResponseHeaders extends RequestHeaders {
+  getSetCookie(): Array<string>;
+
+  set(name: HeaderName, value: string | null | undefined): void;
+
+  setNumber(name: HeaderName, value: number | null | undefined): void;
+
+  setDate(name: HeaderName, value: Date | null | undefined): void;
+
+  appendSetCookie(value: string): void;
+
+  delete(name: HeaderName): void;
+
+  deleteMany(pattern: RegExp): void;
+
+  deleteAllExcept(namesToKeep: Array<HeaderName>): void;
+
+  reset(nodeHeaders: Record<string, string | Array<string> | undefined>);
+}
+
 export type HeadersAsObject = Record<string, string | Array<string> | undefined>;
 
 export interface HititipiContext {
@@ -19,10 +55,10 @@ export interface HititipiContext {
   readonly requestHttpVersion: 1 | 2 | number;
   readonly requestMethod: HititipiMethod;
   readonly requestUrl: URL;
-  readonly requestHeaders: Headers;
+  readonly requestHeaders: RequestHeaders;
   readonly requestBody: ReadableStream;
   responseStatus?: number;
-  readonly responseHeaders: Headers;
+  readonly responseHeaders: ResponseHeaders;
   responseBody?: string | ArrayBuffer | ReadableStream;
   responseModificationDate?: Date;
   responseEtag?: Etag;
