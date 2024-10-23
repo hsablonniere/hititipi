@@ -5,15 +5,17 @@ import { chainUntilResponse } from './chain-until-response.js';
 
 /**
  * @typedef {import('../../types/hititipi.types.d.ts').HititipiMiddleware} HititipiMiddleware
+ * @typedef {import('../../types/hititipi.types.d.ts').HeaderName} HeaderName
+ * @typedef {import('../../types/hititipi.types.d.ts').ResponseHeaders} ResponseHeaders
  */
 
 /**
- * @param {Headers} headers
- * @param {string} headerName
+ * @param {ResponseHeaders} headers
+ * @param {HeaderName} headerName
  * @param {string} headerValue
  */
 function appendHeader(headers, headerName, headerValue) {
-  if (headers.get(headerName) == null) {
+  if (!headers.has(headerName)) {
     headers.set(headerName, headerValue);
   } else {
     headers.set(headerName, headers.get(headerName) + '-' + headerValue);

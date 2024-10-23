@@ -2,7 +2,7 @@ import zlib from 'node:zlib';
 import { acceptsEncodings, isCompressible } from '../../lib/compression.js';
 import { duplexToWebTransformStream } from '../../lib/node-streams.js';
 import { toReadableStream } from '../../lib/response-body.js';
-import { getContentLength, updateResponseBody } from '../../lib/response.js';
+import { updateResponseBody } from '../../lib/response.js';
 
 /**
  * @typedef {import('../../types/hititipi.types.d.ts').HititipiMiddleware} HititipiMiddleware
@@ -24,7 +24,7 @@ export function compressWithBrotli(options) {
     context.responseHeaders.set('content-encoding', CONTENT_ENCODING);
     context.responseHeaders.set('vary', 'accept-encoding');
 
-    const responseSize = getContentLength(context);
+    const responseSize = context.responseHeaders.getNumber('content-length');
 
     const responseBody = toReadableStream(context.responseBody).pipeThrough(
       duplexToWebTransformStream(

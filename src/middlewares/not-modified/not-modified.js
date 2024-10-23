@@ -3,6 +3,7 @@ import { etagToString } from '../../lib/etag.js';
 /**
  * @typedef {import('../../types/hititipi.types.d.ts').HititipiMiddleware} HititipiMiddleware
  * @typedef {import('../../types/hititipi.types.d.ts').HititipiContext} HititipiContext
+ * @typedef {import('../../types/hititipi.types.d.ts').HeaderName} HeaderName
  * @typedef {import('./not-modified.types.d.ts').NotModifiedOptions} NotModifiedOptions
  */
 
@@ -22,7 +23,7 @@ export function notModified(options) {
     }
 
     if (options.lastModified && context.responseModificationDate != null) {
-      context.responseHeaders.set('last-modified', context.responseModificationDate.toUTCString());
+      context.responseHeaders.setDate('last-modified', context.responseModificationDate);
     }
 
     if (options.etag) {
@@ -39,17 +40,15 @@ export function notModified(options) {
     }
 
     if (options.lastModified && context.responseModificationDate != null) {
-      const ifModifiedSince = context.requestHeaders.get('if-modified-since');
-      if (ifModifiedSince != null) {
-        const ifModifiedSinceDate = new Date(ifModifiedSince);
-        if (isBeforeRelax(context.responseModificationDate, ifModifiedSinceDate)) {
-          return notModifiedResponse(context);
-        }
+      const ifModifiedSince = context.requestHeaders.getDate('if-modified-since');
+      if (ifModifiedSince != null && isBeforeRelax(context.responseModificationDate, ifModifiedSince)) {
+        return notModifiedResponse(context);
       }
     }
   };
 }
 
+/** @type {Array<HeaderName>} */
 const IMPORTANT_NOT_MODIFIED_HEADERS = [
   // https://www.rfc-editor.org/rfc/rfc9110#status.304
   'cache-control',
@@ -60,20 +59,20 @@ const IMPORTANT_NOT_MODIFIED_HEADERS = [
   'vary',
 ];
 
+/** @type {Array<HeaderName>} */
+const IMPORTANT_NOT_MODIFIED_HEADERS_WITH_LAST_MODIFIED = [...IMPORTANT_NOT_MODIFIED_HEADERS, 'last-modified'];
+
 /**
  * @param {HititipiContext} context
  */
 function notModifiedResponse(context) {
   context.responseStatus = 304;
   const hasEtag = context.responseHeaders.has('etag');
-  Array.from(context.responseHeaders.keys()).forEach((name) => {
-    if (IMPORTANT_NOT_MODIFIED_HEADERS.includes(name)) {
-      return;
-    } else if (name === 'last-modified' && !hasEtag) {
-      return;
-    }
-    context.responseHeaders.delete(name);
-  });
+  if (hasEtag) {
+    context.responseHeaders.deleteAllExcept(IMPORTANT_NOT_MODIFIED_HEADERS);
+  } else {
+    context.responseHeaders.deleteAllExcept(IMPORTANT_NOT_MODIFIED_HEADERS_WITH_LAST_MODIFIED);
+  }
 }
 
 /**

@@ -1,4 +1,3 @@
-import { toObjectHeaders } from '../src/hititipi.common.js';
 import { ONE_DAY_S, ONE_YEAR_S } from '../src/lib/durations.js';
 import { toString as readableToString } from '../src/lib/response-body.js';
 import { cacheControl } from '../src/middlewares/cache-control/cache-control.js';
@@ -48,7 +47,7 @@ function dumpInResponseMiddleware(context) {
     requestId: context.requestId,
     requestMethod: context.requestMethod,
     requestUrl: context.requestUrl,
-    requestHeaders: toObjectHeaders(context.requestHeaders),
+    requestHeaders: context.requestHeaders.getObject(),
   })(context);
 }
 

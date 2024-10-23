@@ -9,7 +9,7 @@ describe('middleware / send-json', () => {
     await sendJson(200, { foo: 'bar' })(context);
     assert.strictEqual(context.responseStatus, 200);
     assert.strictEqual(context.responseHeaders.get('content-type'), 'application/json');
-    assert.strictEqual(context.responseHeaders.get('content-length'), '13');
+    assert.strictEqual(context.responseHeaders.getNumber('content-length'), 13);
     assert.strictEqual(context.responseBody, '{"foo":"bar"}');
   });
   it('with array', async () => {
@@ -17,7 +17,7 @@ describe('middleware / send-json', () => {
     await sendJson(200, ['one', 'two'])(context);
     assert.strictEqual(context.responseStatus, 200);
     assert.strictEqual(context.responseHeaders.get('content-type'), 'application/json');
-    assert.strictEqual(context.responseHeaders.get('content-length'), '13');
+    assert.strictEqual(context.responseHeaders.getNumber('content-length'), 13);
     assert.strictEqual(context.responseBody, '["one","two"]');
   });
 });

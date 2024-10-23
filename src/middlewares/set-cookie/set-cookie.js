@@ -14,6 +14,6 @@ import { getSetCookieHeader } from '../../lib/cookie.js';
 export function setCookie(name, value, options = {}) {
   return async (context) => {
     const setCookieHeader = getSetCookieHeader(name, value, options);
-    context.responseHeaders.append('set-cookie', setCookieHeader);
+    context.responseHeaders.appendSetCookie(setCookieHeader);
   };
 }
