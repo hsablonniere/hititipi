@@ -1,5 +1,5 @@
 import { pipeline } from 'node:stream/promises';
-import { getRandomId, getRequestIps, getRequestUrl, hasResponseBody } from './hititipi.common.js';
+import { getRequestIps, getRequestUrl, hasResponseBody } from './hititipi.common.js';
 import { readableToWebReadableStream } from './lib/node-streams.js';
 
 /**
@@ -26,7 +26,7 @@ export function hititipi(applyMiddleware) {
     /** @type {HititipiContext} */
     const context = {
       requestTimestamp: Date.now(),
-      requestId: getRandomId(),
+      requestId: globalThis.crypto.randomUUID(),
       requestIps: getRequestIps(nodeRequest.socket.remoteAddress, requestHeaders),
       requestHttpVersion: nodeRequest.httpVersionMajor,
       requestMethod: nodeRequest.method ?? 'GET',
