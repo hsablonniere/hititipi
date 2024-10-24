@@ -23,22 +23,6 @@ export function toObjectHeaders(headers) {
   return Object.fromEntries(headers.entries());
 }
 
-const BASE62_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('');
-
-/**
- * @param {number} [size]
- * @return {string}
- */
-export function getRandomId(size = 10) {
-  const randomBytes = globalThis.crypto.getRandomValues(new Uint8Array(size));
-  return Array.from(randomBytes)
-    .map((byte) => {
-      const randomIndex = byte % BASE62_CHARS.length;
-      return BASE62_CHARS[randomIndex];
-    })
-    .join('');
-}
-
 /**
  * @param {string|null|undefined} rawRemoteAddress
  * @param {RequestHeaders} headers
