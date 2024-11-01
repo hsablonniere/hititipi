@@ -10,7 +10,7 @@ export default [
       'no-empty': ['error', { allowEmptyCatch: true }],
       // TypeScript handles this
       'no-undef': 'off',
-      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
     },
   },
 ];
