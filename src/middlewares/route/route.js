@@ -30,7 +30,7 @@ export function route(method, path, withParams) {
   const matchPath = createMatchPath(path, { decode: decodeURIComponent });
   return async (context) => {
     if (matchesMethod(method, context.requestMethod)) {
-      const pathMatches = matchPath(context.requestUrl.pathname);
+      const pathMatches = matchPath(context.requestPathname);
       if (pathMatches !== false) {
         // @ts-ignore
         return withParams(pathMatches.params)(context);

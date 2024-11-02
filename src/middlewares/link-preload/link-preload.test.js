@@ -5,7 +5,7 @@ import { linkPreload } from './link-preload.js';
 
 describe('middleware / link-preload', () => {
   it('resource match in manifest with preload style should set link header and call writeEarlyHints', async () => {
-    const context = initTestContext({ requestUrl: 'http://localhost:8080/foo.html' });
+    const context = initTestContext({ requestUrl: '/foo.html' });
     await linkPreload({
       earlyHints: 'always',
       manifest: {
@@ -23,7 +23,7 @@ describe('middleware / link-preload', () => {
   });
 
   it('resource match in manifest with modulepreload script should set link header and call writeEarlyHints', async () => {
-    const context = initTestContext({ requestUrl: 'http://localhost:8080/foo.html' });
+    const context = initTestContext({ requestUrl: '/foo.html' });
     await linkPreload({
       earlyHints: 'always',
       manifest: {
@@ -40,7 +40,7 @@ describe('middleware / link-preload', () => {
   });
 
   it('resource match in manifest with crossorigin preload font should set link header and call writeEarlyHints', async () => {
-    const context = initTestContext({ requestUrl: 'http://localhost:8080/foo.html' });
+    const context = initTestContext({ requestUrl: '/foo.html' });
     await linkPreload({
       earlyHints: 'always',
       manifest: {
@@ -57,7 +57,7 @@ describe('middleware / link-preload', () => {
   });
 
   it('resource match in manifest with multiple configs should set link header and call writeEarlyHints', async () => {
-    const context = initTestContext({ requestUrl: 'http://localhost:8080/foo.html' });
+    const context = initTestContext({ requestUrl: '/foo.html' });
     await linkPreload({
       earlyHints: 'always',
       manifest: {
@@ -87,7 +87,7 @@ describe('middleware / link-preload', () => {
   });
 
   it('no resource match in manifest should not set link header and not call writeEarlyHints', async () => {
-    const context = initTestContext({ requestUrl: 'http://localhost:8080/foo.html' });
+    const context = initTestContext({ requestUrl: '/foo.html' });
     await linkPreload({
       earlyHints: 'always',
       manifest: {
@@ -102,7 +102,7 @@ describe('middleware / link-preload', () => {
   });
 
   it('no resources in manifest should not set link header and not call writeEarlyHints', async () => {
-    const context = initTestContext({ requestUrl: 'http://localhost:8080/foo.html' });
+    const context = initTestContext({ requestUrl: '/foo.html' });
     await linkPreload({
       earlyHints: 'always',
       manifest: {
@@ -115,7 +115,7 @@ describe('middleware / link-preload', () => {
   });
 
   it('earlyHints "never" with HTTP 1.1 should only set link header', async () => {
-    const context = initTestContext({ requestHttpVersion: 1, requestUrl: 'http://localhost:8080/foo.html' });
+    const context = initTestContext({ requestHttpVersion: 1, requestUrl: '/foo.html' });
     await linkPreload({
       earlyHints: 'never',
       manifest: {
@@ -130,7 +130,7 @@ describe('middleware / link-preload', () => {
   });
 
   it('earlyHints "never" with HTTP/2 should only set link header', async () => {
-    const context = initTestContext({ requestHttpVersion: 2, requestUrl: 'http://localhost:8080/foo.html' });
+    const context = initTestContext({ requestHttpVersion: 2, requestUrl: '/foo.html' });
     await linkPreload({
       earlyHints: 'never',
       manifest: {
@@ -145,7 +145,7 @@ describe('middleware / link-preload', () => {
   });
 
   it('earlyHints "http2-only" with HTTP 1.1 should only set link header', async () => {
-    const context = initTestContext({ requestHttpVersion: 1, requestUrl: 'http://localhost:8080/foo.html' });
+    const context = initTestContext({ requestHttpVersion: 1, requestUrl: '/foo.html' });
     await linkPreload({
       earlyHints: 'http2-only',
       manifest: {
@@ -160,7 +160,7 @@ describe('middleware / link-preload', () => {
   });
 
   it('earlyHints "http2-only" with HTTP/2 should set link header and call writeEarlyHints', async () => {
-    const context = initTestContext({ requestHttpVersion: 2, requestUrl: 'http://localhost:8080/foo.html' });
+    const context = initTestContext({ requestHttpVersion: 2, requestUrl: '/foo.html' });
     await linkPreload({
       earlyHints: 'http2-only',
       manifest: {

@@ -24,9 +24,9 @@ export function serveDirectoryIndex(options) {
     }
 
     const pathname =
-      options.basePath != null && context.requestUrl.pathname.startsWith(options.basePath)
-        ? context.requestUrl.pathname.replace(options.basePath, '')
-        : context.requestUrl.pathname;
+      options.basePath != null && context.requestPathname.startsWith(options.basePath)
+        ? context.requestPathname.replace(options.basePath, '')
+        : context.requestPathname;
     const absolutePathname = joinPaths(absoluteRootPath, pathname);
 
     const stats = getStats(absolutePathname);

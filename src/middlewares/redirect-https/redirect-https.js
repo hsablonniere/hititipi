@@ -9,8 +9,9 @@ import { redirect } from '../redirect/redirect.js';
  */
 export function redirectHttps() {
   return async (context) => {
-    if (context.requestUrl.protocol === 'http:') {
-      return redirect(301, { protocol: 'https:' })(context);
+    if (context.requestProtocol === 'http') {
+      const url = `https://${context.requestHeaders.get('host')}${context.requestPathname}${context.requestSearchParams.toString()}`;
+      return redirect(301, url)(context);
     }
   };
 }

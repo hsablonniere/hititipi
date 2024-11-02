@@ -13,8 +13,8 @@ export function logRequest(options) {
       options.hideTimestamps ? null : new Date(context.requestTimestamp).toISOString(),
       `[${context.requestId}]`,
       context.requestMethod,
-      context.requestUrl.pathname,
-      context.requestUrl.search,
+      context.requestPathname,
+      context.requestSearchParams.toString(),
       context.responseStatus ?? 501,
       `${Date.now() - context.requestTimestamp}ms`,
     ].filter((a) => a != null);

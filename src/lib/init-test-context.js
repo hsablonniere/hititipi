@@ -1,5 +1,5 @@
 import { mock } from 'node:test';
-import { RequestHeadersNode, ResponseHeadersNode } from '../hititipi.node.js';
+import { RequestHeadersNode, RequestSearchParamsNode, ResponseHeadersNode } from '../hititipi.node.js';
 import { toReadableStream } from './response-body.js';
 
 /**
@@ -13,11 +13,13 @@ import { toReadableStream } from './response-body.js';
  * @param {Object} [base]
  * @param {number} [base.requestHttpVersion]
  * @param {HititipiMethod} [base.requestMethod]
+ * @param {'http'|'https'} [base.requestProtocol]
  * @param {string} [base.requestUrl]
  * @param {Record<string, string|Array<string>>} [base.requestHeaders]
  * @return {HititipiContext & { writeEarlyHints: MockWriteEarlyHints }}
  */
 export function initTestContext(base = {}) {
+  const [requestPathname, rawQueryString] = (base.requestUrl ?? '/').split('?');
   const requestHeaders = base.requestHeaders ?? {};
   return {
     requestTimestamp: Date.now(),
@@ -25,7 +27,9 @@ export function initTestContext(base = {}) {
     requestIps: ['127.0.0.1'],
     requestHttpVersion: base.requestHttpVersion ?? 1,
     requestMethod: base.requestMethod ?? 'GET',
-    requestUrl: new URL(base.requestUrl ?? 'http://localhost:8080/foo?bar=42'),
+    requestProtocol: base.requestProtocol ?? 'http',
+    requestPathname,
+    requestSearchParams: new RequestSearchParamsNode(rawQueryString),
     requestHeaders: new RequestHeadersNode(requestHeaders),
     requestBody: toReadableStream(''),
     responseHeaders: new ResponseHeadersNode(),

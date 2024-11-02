@@ -19,8 +19,8 @@ http
 
       return sendJson(200, {
         message: 'Hello world!',
-        firstname: context.requestUrl.searchParams.get('firstname'),
-        lastname: context.requestUrl.searchParams.get('lastname'),
+        firstname: context.requestSearchParams.get('firstname'),
+        lastname: context.requestSearchParams.get('lastname'),
         paragraphs: [
           'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras lacus elit, dictum eu odio at, mattis vestibulum dui. Maecenas nunc lacus, porttitor vel luctus ac, mollis vel lacus. Pellentesque pulvinar egestas ligula sed rhoncus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec vitae pharetra elit. Donec volutpat, arcu vel lacinia ultrices, diam lectus ullamcorper est, a accumsan lorem velit et sapien. Sed interdum faucibus arcu ac facilisis. Aenean luctus quam eget mauris placerat, a congue purus pretium. Curabitur tristique scelerisque tortor. Nullam rhoncus ornare consectetur. Aenean in felis sed libero gravida tempor nec quis arcu. Nulla ac pharetra magna. Aenean a convallis urna. Integer vel nisi sit amet felis varius gravida non vel lacus. Etiam erat est, molestie sed faucibus eget, scelerisque ut est. Vestibulum a ligula porttitor metus tempus euismod.',
           'Maecenas et justo pretium, ultricies ipsum et, condimentum arcu. Cras volutpat arcu urna, et aliquet justo pharetra id. Nunc ut mi augue. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Pellentesque viverra neque quis euismod hendrerit. Nunc blandit mi vitae velit venenatis volutpat. Aliquam purus urna, lacinia in velit vitae, laoreet efficitur diam. Donec tincidunt quam vel magna feugiat, vitae faucibus tellus elementum. In hendrerit rutrum euismod. Sed mauris lacus, finibus vel aliquet eu, congue eu sapien.',

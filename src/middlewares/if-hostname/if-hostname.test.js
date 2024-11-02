@@ -8,8 +8,11 @@ import { ifHostname } from './if-hostname.js';
  * @return {HititipiContext}
  */
 function initTestContextWithHost(hostname) {
-  const context = initTestContext();
-  context.requestUrl.hostname = hostname;
+  const context = initTestContext({
+    requestHeaders: {
+      host: hostname,
+    },
+  });
   return context;
 }
 

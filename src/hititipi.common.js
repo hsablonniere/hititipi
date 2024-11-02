@@ -43,19 +43,15 @@ export function getRequestIps(rawRemoteAddress, headers) {
 }
 
 /**
- * @param {string} partialUrl
  * @param {RequestHeaders} headers
- * @return {URL}
+ * @param {boolean} encrypted
+ * @return {'http'|'https'}
  */
-export function getRequestUrl(partialUrl, headers) {
-  const protocol = headers.get('x-forwarded-proto') ?? headers.get('x-forwarded-protocol') ?? 'http';
-  const hostname = /** @type {string} */ (headers.get('host'));
-  if (partialUrl.startsWith('http://') || partialUrl.startsWith('https://')) {
-    const url = new URL(partialUrl);
-    url.protocol = protocol;
-    return url;
+export function getProtocol(headers, encrypted) {
+  if (headers.get('x-forwarded-proto') === 'https' || headers.get('x-forwarded-protocol') === 'https' || encrypted) {
+    return 'https';
   }
-  return new URL(partialUrl, `${protocol}://${hostname}`);
+  return 'http';
 }
 
 const EMPTY_BODY_STATUSES = [204, 205, 304];
