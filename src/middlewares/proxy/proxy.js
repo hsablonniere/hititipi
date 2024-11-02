@@ -1,6 +1,5 @@
 import { request as requestWithUndici } from 'undici';
 import { readableToWebReadableStream } from '../../lib/node-streams.js';
-import { cloneUrl } from '../redirect/redirect.js';
 
 /**
  * @typedef {import('../../types/hititipi.types.d.ts').HititipiMiddleware} HititipiMiddleware
@@ -8,12 +7,12 @@ import { cloneUrl } from '../redirect/redirect.js';
  */
 
 /**
- * @param {UrlParts} urlParts
+ * @param {string} targetOrigin
  * @return {HititipiMiddleware}
  */
-export function proxy(urlParts) {
+export function proxy(targetOrigin) {
   return async (context) => {
-    const targetUrl = cloneUrl(context.requestUrl, urlParts);
+    const targetUrl = `${targetOrigin}${context.requestPathname}${context.requestSearchParams.toString()}`;
 
     const hostHeader = context.requestHeaders.get('host');
     const requestHeaders = context.requestHeaders.getObject();

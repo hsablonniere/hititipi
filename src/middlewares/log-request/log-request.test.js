@@ -11,7 +11,7 @@ function consoleLogNoop(_message, ..._optionalParams) {}
 
 describe('middleware / log-request', () => {
   it('hideTimestamps: false', async () => {
-    const context = initTestContext();
+    const context = initTestContext({ requestUrl: '/foo?bar=42' });
     const logFunction = mock.fn(consoleLogNoop);
     await logRequest({ hideTimestamps: false, logFunction })(context);
     assert.equal(logFunction.mock.callCount(), 1);
@@ -25,7 +25,7 @@ describe('middleware / log-request', () => {
     assert.ok(callArgs[6].match(/^\d+ms$/));
   });
   it('hideTimestamps: true', async () => {
-    const context = initTestContext();
+    const context = initTestContext({ requestUrl: '/foo?bar=42' });
     const logFunction = mock.fn(consoleLogNoop);
     await logRequest({ hideTimestamps: true, logFunction })(context);
     assert.equal(logFunction.mock.callCount(), 1);

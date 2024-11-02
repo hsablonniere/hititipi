@@ -46,7 +46,7 @@ function dumpInResponseMiddleware(context) {
   return sendJson(200, {
     requestId: context.requestId,
     requestMethod: context.requestMethod,
-    requestUrl: context.requestUrl,
+    requestPathname: context.requestPathname,
     requestHeaders: context.requestHeaders.getObject(),
   })(context);
 }
@@ -103,12 +103,12 @@ export const mainMiddleware = chainAll([
   frameOptions({ mode: 'DENY' }),
   contentTypeOptions({ noSniff: true }),
   chainUntilResponse([
-    ifHostname('github.localhost', proxy({ origin: 'https://github.com' })),
+    ifHostname('github.localhost', proxy('https://github.com')),
     ifHostname('foo.localhost', async (context) => {
-      return sendJson(200, { msg: `Hello from ${context.requestUrl.hostname}` })(context);
+      return sendJson(200, { msg: `Hello from ${context.requestHeaders.get('host')}` })(context);
     }),
     ifHostname('bar.localhost', async (context) => {
-      return sendJson(200, { msg: `Hello from ${context.requestUrl.hostname}` })(context);
+      return sendJson(200, { msg: `Hello from ${context.requestHeaders.get('host')}` })(context);
     }),
     route('GET', '/test', () => sendFile('./public/test/index.html')),
     route('GET', '/secret', () => {
@@ -122,7 +122,7 @@ export const mainMiddleware = chainAll([
       context.responseStatus = 204;
       context.responseHeaders.set('x-title', title);
     }),
-    route('GET', '/go-home', () => redirect(302, { pathname: '/', search: '', hash: '' })),
+    route('GET', '/go-home', () => redirect(302, '/')),
     route('GET', '/not-found', () => notFoundMiddleware),
     route('POST', '/to-uppercase', () => async (context) => {
       const requestBody = await readableToString(context.requestBody);

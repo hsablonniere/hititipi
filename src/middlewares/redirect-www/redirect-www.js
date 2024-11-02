@@ -11,8 +11,10 @@ import { redirect } from '../redirect/redirect.js';
  */
 export function redirectWww(options) {
   return async (context) => {
-    if (options.hostnames.includes(context.requestUrl.hostname)) {
-      return redirect(301, { hostname: `www.${context.requestUrl.hostname}` })(context);
+    const hostname = context.requestHeaders.get('host');
+    if (hostname != null && options.hostnames.includes(hostname)) {
+      const url = `${context.requestProtocol}://www.${hostname}${context.requestPathname}${context.requestSearchParams.toString()}`;
+      return redirect(301, url)(context);
     }
   };
 }

@@ -16,9 +16,9 @@ export function linkPreload(options) {
   });
 
   return async (context) => {
-    const pathname = context.requestUrl.pathname.endsWith('/')
-      ? context.requestUrl.pathname + 'index.html'
-      : context.requestUrl.pathname;
+    const pathname = context.requestPathname.endsWith('/')
+      ? context.requestPathname + 'index.html'
+      : context.requestPathname;
     const linkHeaderParts = linkHeaderPartsByResource[pathname];
     if (linkHeaderParts == null) {
       return;

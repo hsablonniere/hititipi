@@ -23,7 +23,7 @@ export function ifHostname(pattern, middleware) {
   const hostnameRegex = new RegExp('^' + hostnameRegexString + '$');
 
   return async (context) => {
-    if (context.requestUrl.hostname.match(hostnameRegex)) {
+    if (context.requestHeaders.get('host')?.match(hostnameRegex)) {
       return middleware(context);
     }
   };

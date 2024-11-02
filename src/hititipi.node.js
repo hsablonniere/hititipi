@@ -1,10 +1,12 @@
+import { decode as decodeQueryString } from 'node:querystring';
 import { pipeline } from 'node:stream/promises';
-import { getRequestIps, getRequestUrl, hasResponseBody } from './hititipi.common.js';
+import { getProtocol, getRequestIps, hasResponseBody } from './hititipi.common.js';
 import { readableToWebReadableStream } from './lib/node-streams.js';
 
 /**
  * @typedef {import('./types/hititipi.types.d.ts').HititipiMiddleware} HititipiMiddleware
  * @typedef {import('./types/hititipi.types.d.ts').HititipiContext} HititipiContext
+ * @typedef {import('./types/hititipi.types.d.ts').RequestSearchParams} RequestSearchParams
  * @typedef {import('./types/hititipi.types.d.ts').RequestHeaders} RequestHeaders
  * @typedef {import('./types/hititipi.types.d.ts').ResponseHeaders} ResponseHeaders
  * @typedef {import('node:http').RequestListener} RequestListener
@@ -17,6 +19,11 @@ import { readableToWebReadableStream } from './lib/node-streams.js';
  */
 export function hititipi(applyMiddleware) {
   return async (nodeRequest, nodeResponse) => {
+    const [requestPathname, rawQueryString] = (nodeRequest.url ?? '/').split('?');
+
+    // @ts-ignore
+    const encrypted = nodeRequest?.socket?.encrypted;
+
     // Not sure that there's a way Node.js can produce a request header with an undefined value so let's ignore it
     const requestHeaders = new RequestHeadersNode(
       /** @type {Record<string, string|Array<string>>} */ (nodeRequest.headers),
@@ -30,7 +37,9 @@ export function hititipi(applyMiddleware) {
       requestIps: getRequestIps(nodeRequest.socket.remoteAddress, requestHeaders),
       requestHttpVersion: nodeRequest.httpVersionMajor,
       requestMethod: nodeRequest.method ?? 'GET',
-      requestUrl: getRequestUrl(nodeRequest.url ?? '/', requestHeaders),
+      requestProtocol: getProtocol(requestHeaders, encrypted),
+      requestPathname,
+      requestSearchParams: new RequestSearchParamsNode(rawQueryString),
       requestHeaders,
       requestBody: readableToWebReadableStream(nodeRequest),
       responseHeaders,
@@ -232,5 +241,65 @@ export class ResponseHeadersNode extends RequestHeadersNode {
    */
   reset(nodeHeaders) {
     this._nodeHeaders = nodeHeaders;
+  }
+}
+
+/**
+ * @implements {RequestSearchParams}
+ */
+export class RequestSearchParamsNode {
+  /** @type {string} */
+  #rawSearch;
+
+  /** @type {Record<string, string | Array<string>>} */
+  #searchParams;
+
+  /**
+   * @param {string} rawSearch
+   */
+  constructor(rawSearch) {
+    this.#rawSearch = rawSearch;
+    // Not sure that there's a way Node.js can produce a search param with an undefined value so let's ignore it
+    this.#searchParams = /** @type {Record<string, string | Array<string>>} */ (decodeQueryString(rawSearch));
+  }
+
+  /**
+   * @param {string} name
+   * @return {string|null}
+   */
+  get(name) {
+    const value = this.#searchParams[name];
+    if (Array.isArray(value)) {
+      return value[0];
+    }
+    return value;
+  }
+
+  /**
+   * @param {string} name
+   * @return {Array<string>|null}
+   */
+  getAll(name) {
+    const value = this.#searchParams[name];
+    if (Array.isArray(value)) {
+      return value;
+    } else if (value != null) {
+      [value];
+    }
+    return null;
+  }
+
+  /**
+   * @param {string} name
+   */
+  has(name) {
+    return this.#searchParams[name] != null;
+  }
+
+  toString() {
+    if (this.#rawSearch === '') {
+      return '';
+    }
+    return `?${this.#rawSearch}`;
   }
 }

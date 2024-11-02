@@ -14,6 +14,16 @@ export type HititipiMethod =
 // https://github.com/microsoft/TypeScript/issues/44792
 export type HeaderName = Lowercase<string>;
 
+export interface RequestSearchParams {
+  get(name: string): string | null;
+
+  getAll(name: string): Array<string> | null;
+
+  has(name: string): boolean;
+
+  toString(): string;
+}
+
 export interface RequestHeaders {
   get(name: HeaderName): string | null;
 
@@ -54,7 +64,9 @@ export interface HititipiContext {
   readonly requestIps: Array<string>;
   readonly requestHttpVersion: 1 | 2 | number;
   readonly requestMethod: HititipiMethod;
-  readonly requestUrl: URL;
+  readonly requestProtocol: 'http' | 'https';
+  readonly requestPathname: string;
+  readonly requestSearchParams: RequestSearchParams;
   readonly requestHeaders: RequestHeaders;
   readonly requestBody: ReadableStream;
   responseStatus?: number;

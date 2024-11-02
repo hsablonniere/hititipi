@@ -18,9 +18,9 @@ export function serveStaticFile(options) {
       return;
     }
     const rebasedPathname =
-      options.basePath != null && context.requestUrl.pathname.startsWith(options.basePath)
-        ? context.requestUrl.pathname.replace(options.basePath, '')
-        : context.requestUrl.pathname;
+      options.basePath != null && context.requestPathname.startsWith(options.basePath)
+        ? context.requestPathname.replace(options.basePath, '')
+        : context.requestPathname;
 
     const pathname = rebasedPathname.endsWith('/') ? rebasedPathname + 'index.html' : rebasedPathname;
     const absoluteFilepath = joinPaths(absoluteRootPath, pathname);
